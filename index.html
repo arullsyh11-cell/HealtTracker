@@ -1014,10 +1014,10 @@
       const date = document.getElementById("global-date").value;
       const todayFoods = db.foods.filter(f => f.date === date);
       const totals = todayFoods.reduce((acc, f) => ({
-        cal: acc.cal + f.cal,
-        pro: acc.pro + f.pro,
-        carb: acc.carb + f.carb,
-        fat: acc.fat + f.fat
+        cal: acc.cal + Number(f.cal),
+        pro: acc.pro + Number(f.pro),
+        carb: acc.carb + Number(f.carb),
+        fat: acc.fat + Number(f.fat)
       }), { cal: 0, pro: 0, carb: 0, fat: 0 });
 
       const targetCal = db.profile.targetCal || 2000;
@@ -1031,11 +1031,13 @@
       document.getElementById("calc-activity").value = db.profile.activity || 1.55;
       document.getElementById("calc-goal").value = db.profile.goal || 'deficit';
 
-      document.getElementById("dash-rem-cal").textContent = Math.max(0, targetCal - totals.cal);
-      document.getElementById("dash-cons-cal").textContent = totals.cal + " kkal dikonsumsi";
-      document.getElementById("dash-pro").textContent = totals.pro + "g";
-      document.getElementById("dash-carb").textContent = totals.carb + "g";
-      document.getElementById("dash-fat").textContent = totals.fat + "g";
+      document.getElementById("dash-rem-cal").textContent = Math.max(0, targetCal - Math.round(totals.cal));
+      document.getElementById("dash-cons-cal").textContent = Math.round(totals.cal) + " kkal dikonsumsi";
+      
+      // Menggunakan .toFixed(1) agar angka desimal dibulatkan rapi (maksimal 1 angka di belakang koma)
+      document.getElementById("dash-pro").textContent = totals.pro.toFixed(1).replace(/\.0$/, '') + "g";
+      document.getElementById("dash-carb").textContent = totals.carb.toFixed(1).replace(/\.0$/, '') + "g";
+      document.getElementById("dash-fat").textContent = totals.fat.toFixed(1).replace(/\.0$/, '') + "g";
 
       document.getElementById("res-bmr").textContent = Math.round(10 * db.profile.weight + 6.25 * db.profile.height - 5 * db.profile.age + 5) + " kkal";
       document.getElementById("res-tdee").textContent = targetCal + " kkal";
@@ -1044,8 +1046,8 @@
 
       const splitPro = Math.round(targetPro / 4);
       document.getElementById("protein-timing-list").innerHTML = ['Pagi', 'Siang', 'Malam', 'Camilan'].map(meal => {
-        const consumed = todayFoods.filter(f => f.meal === meal).reduce((s, f) => s + f.pro, 0);
-        return `<div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl"><span>${meal}</span><span class="font-bold text-emerald-700">${consumed} / ${splitPro}g</span></div>`;
+        const consumed = todayFoods.filter(f => f.meal === meal).reduce((s, f) => s + Number(f.pro), 0);
+        return `<div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl"><span>${meal}</span><span class="font-bold text-emerald-700">${consumed.toFixed(1).replace(/\.0$/, '')} / ${splitPro}g</span></div>`;
       }).join("");
 
       renderCharts(totals);
