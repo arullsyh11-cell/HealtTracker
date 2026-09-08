@@ -1003,7 +1003,7 @@
       document.getElementById("streak-count-mob").textContent = `🔥 ${db.streak} Hari`;
 
       const splitPro = Math.round(targetPro / 4);
-      document.getElementById("protein-timing-list").innerHTML = ['Pagi (Sarapan)', 'Siang', 'Malam', 'Camilan'].map(meal => {
+      document.getElementById("protein-timing-list").innerHTML = ['Pagi', 'Siang', 'Malam', 'Camilan'].map(meal => {
         const consumed = todayFoods.filter(f => f.meal === meal).reduce((s, f) => s + f.pro, 0);
         return `<div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl"><span>${meal}</span><span class="font-bold text-emerald-700">${consumed} / ${splitPro}g</span></div>`;
       }).join("");
