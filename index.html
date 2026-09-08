@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health & Nutrition Tracker Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js untuk Grafik Interaktif Makro & Tren -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- jsPDF untuk Export Laporan PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f4f7f6; color: #1e293b; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .nav-item.active { background-color: #e5f0f2; color: #1b5e20; font-weight: 700; }
+    .toast { transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .toast.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row">
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0">
+    <div>
+      <div class="p-6 flex items-center gap-3 border-b border-slate-100">
+        <div class="w-10 h-10 rounded-xl bg-emerald-700 flex items-center justify-center text-white font-bold text-xl shadow-md">H</div>
+        <div>
+          <h1 class="font-extrabold text-slate-800 tracking-tight">HealthTracker</h1>
+          <p class="text-xs text-slate-400">Pro Edition</p>
+        </div>
+      </div>
+      <nav class="p-4 space-y-1">
+        <button type="button" data-tab="dashboard" class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+        </button>
+        <button type="button" data-tab="food" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="utensils" class="w-5 h-5"></i> Makanan & Nutrisi
+        </button>
+        <button type="button" data-tab="workout" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="dumbbell" class="w-5 h-5"></i> Jadwal & Latihan
+        </button>
+        <button type="button" data-tab="weight" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="scale" class="w-5 h-5"></i> Pantau Berat Badan
+        </button>
+        <button type="button" data-tab="calculator" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="calculator" class="w-5 h-5"></i> Profil & Kalkulator TDEE
+        </button>
+        <button type="button" data-tab="report" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="file-text" class="w-5 h-5"></i> Riwayat & Export PDF
+        </button>
+      </nav>
+    </div>
+    <div class="p-4 border-t border-slate-100">
+      <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100">
+        <p class="text-xs font-bold text-emerald-800">Streak Konsistensi</p>
+        <p id="streak-count" class="text-lg font-black text-emerald-700">🔥 0 Hari</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 p-4 md:p-8 overflow-y-auto pb-24 md:pb-8">
+
+    <!-- 1. SCREEN: DASHBOARD -->
+    <section id="screen-dashboard" class="screen active space-y-6">
+      <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 id="welcome-title" class="text-2xl font-extrabold text-slate-800">Dashboard Utama</h2>
+          <p class="text-sm text-slate-500">Ringkasan harian asupan nutrisi dan target tubuhmu.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <input type="date" id="global-date" class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          <button id="open-food-modal-dash" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i> Catat Makanan
+          </button>
+        </div>
+      </header>
+
+      <!-- Ringkasan Makronutrisi & Kalori -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sisa Kalori</p>
+            <h3 id="dash-rem-cal" class="text-2xl font-black text-slate-800 mt-1">0</h3>
+            <p id="dash-cons-cal" class="text-xs text-slate-500 mt-0.5">0 kkal dikonsumsi</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-700">
+            <i data-lucide="flame" class="w-6 h-6"></i>
+          </div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Protein</p>
+            <h3 id="dash-pro" class="text-2xl font-black text-slate-800 mt-1">0g</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Target harian</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+            <i data-lucide="zap" class="w-6 h-6"></i>
+          </div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Karbohidrat</p>
+            <h3 id="dash-carb" class="text-2xl font-black text-slate-800 mt-1">0g</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Makro utama</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+            <i data-lucide="cookie" class="w-6 h-6"></i>
+          </div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Lemak</p>
+            <h3 id="dash-fat" class="text-2xl font-black text-slate-800 mt-1">0g</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Makro pendukung</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
+            <i data-lucide="droplet" class="w-6 h-6"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid Visual & Hydration -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm md:col-span-2 space-y-6">
+          <h3 class="font-extrabold text-slate-800 text-base">Analisis Makro & Kalori</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="h-64 flex items-center justify-center relative">
+              <canvas id="macroPieChart"></canvas>
+            </div>
+            <div class="h-64 flex items-center justify-center relative">
+              <canvas id="mealBarChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex justify-between items-center">
+              <h3 class="font-extrabold text-slate-800 text-base">Pelacak Air Minum</h3>
+              <button id="reset-water" class="text-xs font-bold text-rose-600 hover:underline">Reset</button>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm font-bold mb-1">
+                <span id="water-text">0 ml</span>
+                <span class="text-slate-400">/ 2000 ml</span>
+              </div>
+              <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                <div id="water-progress" class="h-full bg-cyan-500 transition-all duration-300" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-4 gap-2 pt-2">
+              <button type="button" onclick="addWater(250)" class="bg-cyan-50 hover:bg-cyan-100 text-cyan-700 font-bold py-2 rounded-xl text-xs transition">+250ml</button>
+              <button type="button" onclick="addWater(500)" class="bg-cyan-50 hover:bg-cyan-100 text-cyan-700 font-bold py-2 rounded-xl text-xs transition">+500ml</button>
+              <button type="button" onclick="addWater(600)" class="bg-cyan-50 hover:bg-cyan-100 text-cyan-700 font-bold py-2 rounded-xl text-xs transition">+600ml</button>
+              <button type="button" onclick="addWater(1500)" class="bg-cyan-50 hover:bg-cyan-100 text-cyan-700 font-bold py-2 rounded-xl text-xs transition">+1.5L</button>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="font-extrabold text-slate-800 text-base">Protein Timing (4 Jadwal)</h3>
+            <p class="text-xs text-slate-500">Target protein harian dibagi rata agar penyerapan otot optimal.</p>
+            <div id="protein-timing-list" class="space-y-2 text-xs font-semibold"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. SCREEN: MAKANAN & NUTRISI -->
+    <section id="screen-food" class="screen space-y-6">
+      <header class="flex justify-between items-center">
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-800">Database & Log Makanan</h2>
+          <p class="text-sm text-slate-500">Pilih dari database lokal atau masukkan makanan kustom sesuai porsi.</p>
+        </div>
+        <button onclick="openFoodModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center gap-2">
+          <i data-lucide="plus" class="w-4 h-4"></i> Tambah Makanan
+        </button>
+      </header>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center gap-3">
+        <span class="text-xs font-bold text-slate-500 uppercase">Filter Cepat:</span>
+        <button type="button" onclick="filterFood('all')" class="food-filter-btn active bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">Semua</button>
+        <button type="button" onclick="filterFood('high-protein')" class="food-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition">Tinggi Protein (&ge;15g)</button>
+        <button type="button" onclick="filterFood('high-carbs')" class="food-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition">Tinggi Karbo</button>
+        <button type="button" onclick="filterFood('low-fat')" class="food-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition">Rendah Lemak</button>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+          <h3 class="font-extrabold text-slate-800">Daftar Konsumsi Hari Ini</h3>
+          <button onclick="clearDailyFood()" class="text-xs font-bold text-rose-600 hover:underline">Hapus Semua Log</button>
+        </div>
+        <div class="divide-y divide-slate-100" id="food-log-list"></div>
+      </div>
+    </section>
+
+    <!-- 3. SCREEN: JADWAL & LATIHAN -->
+    <section id="screen-workout" class="screen space-y-6">
+      <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-800">Jadwal & Tracking Latihan</h2>
+          <p class="text-sm text-slate-500">Pilih program latihan mingguan atau catat pembakaran kalori latihanmu.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <select id="pilih-split-dropdown" onchange="changeWorkoutSplit()" class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 text-slate-700">
+            <option value="Push / Pull / Legs">Push / Pull / Legs (PPL)</option>
+            <option value="Upper / Lower">Upper / Lower Body</option>
+            <option value="Full Body">Full Body Workout</option>
+          </select>
+          <button onclick="openWorkoutModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i> Catat Workout
+          </button>
+        </div>
+      </header>
+
+      <!-- TAMPILAN JADWAL LATIHAN MINGGUAN (SESUAI REQUEST) -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="font-extrabold text-slate-800 text-lg" id="workout-program-title">Jadwal Latihan: Push / Pull / Legs</h3>
+            <p class="text-xs text-slate-500">Ikuti rangkaian gerakan harian di bawah ini secara konsisten.</p>
+          </div>
+          <span class="px-3 py-1 rounded-xl text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">Aktif</span>
+        </div>
+        
+        <div id="weekly-workout-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100">
+          <h3 class="font-extrabold text-slate-800">Log Riwayat Aktivitas Olahraga</h3>
+        </div>
+        <div class="divide-y divide-slate-100" id="workout-log-list"></div>
+      </div>
+    </section>
+
+    <!-- 4. SCREEN: PANTAU BERAT BADAN -->
+    <section id="screen-weight" class="screen space-y-6">
+      <header class="flex justify-between items-center">
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-800">Pantau Berat Badan</h2>
+          <p class="text-sm text-slate-500">Catat perkembangan berat badan harian dan lihat tren grafiknya.</p>
+        </div>
+        <button onclick="openWeightModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center gap-2">
+          <i data-lucide="plus" class="w-4 h-4"></i> Catat Berat Badan
+        </button>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-extrabold text-slate-800">Statistik Tubuh</h3>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between py-2 border-b border-slate-100">
+              <span class="text-slate-500">Berat Saat Ini</span>
+              <span id="stat-current-w" class="font-bold text-slate-800">0 kg</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-slate-100">
+              <span class="text-slate-500">Target Berat</span>
+              <span id="stat-target-w" class="font-bold text-emerald-700">0 kg</span>
+            </div>
+            <div class="flex justify-between py-2">
+              <span class="text-slate-500">Selisih</span>
+              <span id="stat-diff-w" class="font-bold text-slate-800">0 kg</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm md:col-span-2 space-y-4">
+          <h3 class="font-extrabold text-slate-800">Grafik Tren Berat Badan</h3>
+          <div class="h-64 flex items-center justify-center relative">
+            <canvas id="weightTrendChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. SCREEN: PROFIL & KALKULATOR TDEE -->
+    <section id="screen-calculator" class="screen space-y-6">
+      <header>
+        <h2 class="text-2xl font-extrabold text-slate-800">Profil & Kalkulator TDEE</h2>
+        <p class="text-sm text-slate-500">Atur nama profil, parameter tubuh, serta hitung kebutuhan kalori harianmu.</p>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-extrabold text-slate-800">Identitas & Parameter Tubuh</h3>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Masukan Nama</label>
+              <input type="text" id="profile-name-input" placeholder="Masukkan Nama Kamu..." class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Usia (Tahun)</label>
+              <input type="number" id="calc-age" value="22" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Berat Badan (kg)</label>
+                <input type="number" id="calc-weight" value="65" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Tinggi Badan (cm)</label>
+                <input type="number" id="calc-height" value="170" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Level Aktivitas</label>
+              <select id="calc-activity" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <option value="1.2">Jarang Olahraga (Sedentary)</option>
+                <option value="1.375">Ringan (1-3 hari/minggu)</option>
+                <option value="1.55" selected>Sedang (3-5 hari/minggu)</option>
+                <option value="1.725">Berat (6-7 hari/minggu)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Target Utama</label>
+              <select id="calc-goal" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <option value="deficit" selected>Defisit Kalori (Turun Berat)</option>
+                <option value="maintenance">Maintenance (Jaga Berat)</option>
+                <option value="surplus">Surplus Kalori (Naik Massa Otot)</option>
+              </select>
+            </div>
+            <button onclick="calculateBMRAndTDEE()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">Simpan Profil & Hitung Target</button>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="font-extrabold text-slate-800">Hasil Kalkulasi Ideal</h3>
+            <div class="grid grid-cols-2 gap-4 text-center">
+              <div class="bg-slate-50 p-4 rounded-xl">
+                <p class="text-xs font-bold text-slate-400 uppercase">BMR</p>
+                <h4 id="res-bmr" class="text-xl font-black text-slate-800 mt-1">0 kkal</h4>
+              </div>
+              <div class="bg-emerald-50 p-4 rounded-xl">
+                <p class="text-xs font-bold text-emerald-800 uppercase">Target TDEE</p>
+                <h4 id="res-tdee" class="text-xl font-black text-emerald-700 mt-1">0 kkal</h4>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="font-extrabold text-slate-800">Cloud Sync & Backup Google Sheets</h3>
+            <p class="text-xs text-slate-500">Hubungkan data aplikasimu ke Google Sheets untuk backup otomatis jarak jauh.</p>
+            <input type="text" id="sheets-url" placeholder="Masukkan Webhook URL Google Apps Script..." class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold focus:outline-none">
+            <button onclick="syncToCloud()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs transition">Sinkronisasi Sekarang</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. SCREEN: RIWAYAT & EXPORT PDF -->
+    <section id="screen-report" class="screen space-y-6">
+      <header class="flex justify-between items-center">
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-800">Riwayat & Export PDF Report</h2>
+          <p class="text-sm text-slate-500">Unduh laporan harian lengkap dengan makronutrisi dan tabel makanan.</p>
+        </div>
+        <button onclick="downloadPDFReport()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-3 rounded-xl text-sm shadow-md transition flex items-center gap-2">
+          <i data-lucide="download" class="w-4 h-4"></i> Download Laporan PDF
+        </button>
+      </header>
+
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+        <h3 class="font-extrabold text-slate-800">Tren Kalori 7 Hari Terakhir</h3>
+        <div class="h-64 flex items-center justify-center relative">
+          <canvas id="sevenDayCalorieChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: TAMBAH MAKANAN (MULTI-ITEM) -->
+  <div id="food-modal" class="modal-backdrop fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white w-full max-w-xl rounded-3xl p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-extrabold text-slate-800">Tambah Catatan Makanan</h3>
+        <button onclick="closeModal('food-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Pilih dari Database Lokal</label>
+          <select id="food-db-select" onchange="selectFoodPreset()" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+            <option value="">-- Pilih Makanan Lokal --</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Waktu Makan</label>
+          <select id="food-meal-time" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+            <option value="Pagi">Pagi (Sarapan)</option>
+            <option value="Siang">Siang</option>
+            <option value="Malam">Malam</option>
+            <option value="Camilan">Camilan</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Nama Makanan</label>
+          <input type="text" id="food-name" placeholder="cth: Nasi Padang" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Kalori (kkal)</label>
+            <input type="number" id="food-cal" placeholder="0" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Protein (g)</label>
+            <input type="number" id="food-pro" placeholder="0" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Karbohidrat (g)</label>
+            <input type="number" id="food-carb" placeholder="0" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Lemak (g)</label>
+            <input type="number" id="food-fat" placeholder="0" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+          </div>
+        </div>
+        
+        <button type="button" onclick="addFoodToQueue()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i> Tambah ke Daftar List
+        </button>
+
+        <div class="border border-slate-200 rounded-2xl p-4 space-y-3 bg-slate-50">
+          <div class="flex justify-between items-center text-xs font-extrabold text-slate-700">
+            <span>Daftar Item Dipilih (<span id="queue-count">0</span>)</span>
+            <span id="queue-total-cal">Total: 0 kkal</span>
+          </div>
+          <div id="food-queue-list" class="divide-y divide-slate-200 max-h-40 overflow-y-auto text-xs">
+            <p class="text-slate-400 text-center py-3">Belum ada makanan ditambahkan ke list.</p>
+          </div>
+        </div>
+
+        <button onclick="saveAllFoodQueue()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">Simpan Semua Makanan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CATAT WORKOUT -->
+  <div id="workout-modal" class="modal-backdrop fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-5 relative">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-extrabold text-slate-800">Catat Aktivitas Latihan</h3>
+        <button onclick="closeModal('workout-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Jenis Aktivitas</label>
+          <select id="workout-type" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+            <option value="Gym / Weightlifting (MET 6)">Gym / Weightlifting</option>
+            <option value="Running (MET 8)">Running</option>
+            <option value="Futsal / Sepak Bola (MET 7)">Futsal / Sepak Bola</option>
+            <option value="Push/Pull/Legs Session (MET 6)">Push/Pull/Legs Session</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Durasi (Menit)</label>
+          <input type="number" id="workout-duration" value="45" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+        </div>
+        <button onclick="saveWorkoutLog()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">Hitung Kalori & Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CATAT BERAT BADAN -->
+  <div id="weight-modal" class="modal-backdrop fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-5 relative">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-extrabold text-slate-800">Catat Berat Badan</h3>
+        <button onclick="closeModal('weight-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Berat Badan (kg)</label>
+          <input type="number" id="input-weight-val" step="0.1" placeholder="65" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Target Berat Badan (kg)</label>
+          <input type="number" id="input-weight-target" step="0.1" placeholder="58" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+        </div>
+        <button onclick="saveWeightLog()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">Simpan Berat Badan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-sm font-bold z-50">
+    Berhasil disimpan!
+  </div>
+
+  <script>
+    // DATABASE MAKANAN LENGKAP
+    const DATABASE_MAKANAN = {
+      "Nasi Putih (1 piring/150g)": {"kalori": 204, "protein": 4.2, "karbo": 44.0, "lemak": 0.4},
+      "Oatmeal (40g dry)": {"kalori": 150, "protein": 5.0, "karbo": 27.0, "lemak": 2.5},
+      "Nasi Goreng (1 piring)": {"kalori": 510, "protein": 12.5, "karbo": 65.0, "lemak": 21.0},
+      "Roti Tawar Gandum (2 lembar)": {"kalori": 130, "protein": 5.0, "karbo": 24.0, "lemak": 1.5},
+      "Dubai Chewy Cookies (1 pcs/70g)": {"kalori": 320, "protein": 4.5, "karbo": 38.0, "lemak": 17.0},
+      "Es Krim Vanilla / Cokelat (1 scoop/75g)": {"kalori": 150, "protein": 2.5, "karbo": 18.0, "lemak": 7.5},
+      "Kopi Hitam / Americano Unsweetened (1 gelas)": {"kalori": 5, "protein": 0.3, "karbo": 0.0, "lemak": 0.0},
+      "Milk Tea / Boba Drink (1 cup standard)": {"kalori": 350, "protein": 3.0, "karbo": 58.0, "lemak": 12.0},
+      "Yogurt Plain / Greek Yogurt (1 cup/125g)": {"kalori": 100, "protein": 7.0, "karbo": 8.0, "lemak": 4.0},
+      "Ayam Goreng - Dada (1 pcs)": {"kalori": 220, "protein": 29.0, "karbo": 0.0, "lemak": 11.0},
+      "Dada Ayam Bakar (100g)": {"kalori": 165, "protein": 31.0, "karbo": 0.0, "lemak": 3.6},
+      "Telur Rebus (1 butir)": {"kalori": 78, "protein": 6.3, "karbo": 0.6, "lemak": 5.3},
+      "Whey Protein Shake (1 scoop)": {"kalori": 120, "protein": 24.0, "karbo": 3.0, "lemak": 1.5}
+    };
+
+    // PROGRAM LATIHAN MINGGUAN (DARI LOGIKA PYTHON KAMU)
+    const WORKOUT_PROGRAMS = {
+      "Push / Pull / Legs": {
+        "Senin": [["Push-ups / Bench Press", "4 Set x 10-12 Reps"], ["Overhead Shoulder Press", "3 Set x 12 Reps"], ["Tricep Dips", "3 Set x 15 Reps"], ["Incline Push-ups", "3 Set x 12 Reps"]],
+        "Selasa": [["Pull-ups / Inverted Row", "4 Set x 8-10 Reps"], ["Dumbbell / Resistance Band Row", "3 Set x 12 Reps"], ["Bicep Curls", "3 Set x 12 Reps"], ["Face Pulls / Rear Delt Fly", "3 Set x 15 Reps"]],
+        "Rabu": [["Bodyweight / Barbell Squats", "4 Set x 12 Reps"], ["Romanian Deadlifts / Glute Bridges", "3 Set x 10 Reps"], ["Walking Lunges", "3 Set x 12 Reps/kaki"], ["Calf Raises", "4 Set x 20 Reps"]],
+        "Kamis": [["Rest Day / Kardio Ringan", "Jalan santai 30 menit atau stretching"]],
+        "Jumat": [["Push-ups Varian / Chest Fly", "4 Set x 12 Reps"], ["Lateral Raises", "4 Set x 15 Reps"], ["Skullcrushers / Overhead Tricep Extension", "3 Set x 12 Reps"]],
+        "Sabtu": [["Lat Pulldown / Chin-ups", "4 Set x 10 Reps"], ["Hammer Curls", "3 Set x 12 Reps"], ["Plank to Push-up", "3 Set x 10 Reps"]],
+        "Minggu": [["Rest Day / Pemulihan Total", "Fokus tidur cukup & minum air"]]
+      },
+      "Upper / Lower": {
+        "Senin": [["Push-ups", "4 Set x 12 Reps"], ["Rows", "4 Set x 12 Reps"], ["Shoulder Press", "3 Set x 12 Reps"], ["Bicep & Tricep Supersets", "3 Set x 15 Reps"]],
+        "Selasa": [["Squats", "4 Set x 15 Reps"], ["Lunges", "3 Set x 12 Reps"], ["Leg Raises", "3 Set x 15 Reps"], ["Plank", "3 Set x 45 Detik"]],
+        "Rabu": [["Rest Day", "Stretching Ringan"]],
+        "Kamis": [["Incline Push-ups", "4 Set x 12 Reps"], ["Pull-ups / Band Pull", "4 Set x 10 Reps"], ["Lateral Raises", "3 Set x 15 Reps"]],
+        "Jumat": [["Deadlifts / Glute Bridge", "4 Set x 10 Reps"], ["Bulgarian Split Squat", "3 Set x 10 Reps/kaki"], ["Crunches", "3 Set x 20 Reps"]],
+        "Sabtu": [["Kardio / HIIT", "20-30 Menit"]],
+        "Minggu": [["Rest Day", "Pemulihan Total"]]
+      },
+      "Full Body": {
+        "Senin": [["Jumping Jacks", "3 Set x 30 Detik"], ["Bodyweight Squat", "3 Set x 15 Reps"], ["Push-ups", "3 Set x 10 Reps"], ["Plank", "3 Set x 30 Detik"]],
+        "Selasa": [["Rest Day / Jalan Cepat", "30 Menit"]],
+        "Rabu": [["Burpees", "3 Set x 10 Reps"], ["Lunges", "3 Set x 12 Reps"], ["Mountain Climbers", "3 Set x 30 Detik"], ["Crunches", "3 Set x 15 Reps"]],
+        "Kamis": [["Rest Day", "Stretching Fleksibilitas"]],
+        "Jumat": [["High Knees", "3 Set x 30 Detik"], ["Knee Push-ups / Standard Push-ups", "3 Set x 12 Reps"], ["Chair Squat", "3 Set x 15 Reps"], ["Plank", "3 Set x 40 Detik"]],
+        "Sabtu": [["Rest Day / Kardio Ringan", "Jalan Santai"]],
+        "Minggu": [["Rest Day Total", "Istirahat Total"]]
+      }
+    };
+
+    // App State Management
+    let db = JSON.parse(localStorage.getItem("health_pro_db") || JSON.stringify({
+      profile: { name: "Pengguna", age: 22, weight: 65, height: 170, activity: 1.55, goal: "deficit", targetCal: 2000, targetProtein: 120, selectedSplit: "Push / Pull / Legs" },
+      foods: [],
+      workouts: [],
+      weights: [{ date: new Date().toISOString().slice(0,10), weight: 65, target: 58 }],
+      water: 0,
+      streak: 5
+    }));
+
+    let foodQueue = [];
+    let currentFilter = 'all';
+    let macroPieChartInstance = null;
+    let mealBarChartInstance = null;
+    let weightTrendChartInstance = null;
+    let sevenDayChartInstance = null;
+
+    function saveDB() {
+      localStorage.setItem("health_pro_db", JSON.stringify(db));
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2500);
+    }
+
+    function openModal(id) { 
+      const m = document.getElementById(id);
+      m.classList.remove("hidden"); 
+      m.classList.add("flex"); 
+      lucide.createIcons();
+    }
+    
+    function closeModal(id) { 
+      document.getElementById(id).classList.add("hidden"); 
+      document.getElementById(id).classList.remove("flex"); 
+    }
+
+    function initFoodDropdown() {
+      const select = document.getElementById("food-db-select");
+      select.innerHTML = '<option value="">-- Pilih Makanan Lokal --</option>';
+      for (const [name, data] of Object.entries(DATABASE_MAKANAN)) {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = `${name} (${data.kalori} kkal)`;
+        select.appendChild(opt);
+      }
+    }
+    initFoodDropdown();
+
+    document.querySelectorAll('.modal-backdrop').forEach(modal => {
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+        }
+      };
+    });
+
+    document.querySelectorAll(".nav-item").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("screen-" + btn.dataset.tab).classList.add("active");
+        renderAll();
+      };
+    });
+
+    document.getElementById("global-date").value = new Date().toISOString().slice(0,10);
+
+    // Hydration functions
+    function addWater(amount) {
+      db.water = Math.min(4000, db.water + amount);
+      saveDB();
+      renderWater();
+      showToast(`+${amount} ml air ditambahkan!`);
+    }
+
+    document.getElementById("reset-water").onclick = () => {
+      db.water = 0;
+      saveDB();
+      renderWater();
+      showToast("Pelacak air direset.");
+    };
+
+    function renderWater() {
+      const pct = Math.min(100, (db.water / 2000) * 100);
+      document.getElementById("water-text").textContent = db.water + " ml";
+      document.getElementById("water-progress").style.width = pct + "%";
+    }
+
+    function selectFoodPreset() {
+      const name = document.getElementById("food-db-select").value;
+      if (!name) return;
+      const data = DATABASE_MAKANAN[name];
+      if (!data) return;
+      document.getElementById("food-name").value = name;
+      document.getElementById("food-cal").value = data.kalori;
+      document.getElementById("food-pro").value = data.protein;
+      document.getElementById("food-carb").value = data.karbo;
+      document.getElementById("food-fat").value = data.lemak;
+    }
+
+    function openFoodModal() { 
+      foodQueue = [];
+      renderFoodQueue();
+      openModal("food-modal"); 
+    }
+    document.getElementById("open-food-modal-dash").onclick = openFoodModal;
+
+    function addFoodToQueue() {
+      const name = document.getElementById("food-name").value.trim();
+      const meal = document.getElementById("food-meal-time").value;
+      const cal = Number(document.getElementById("food-cal").value) || 0;
+      const pro = Number(document.getElementById("food-pro").value) || 0;
+      const carb = Number(document.getElementById("food-carb").value) || 0;
+      const fat = Number(document.getElementById("food-fat").value) || 0;
+
+      if (!name) return showToast("Masukkan nama makanan.");
+
+      foodQueue.push({ id: Date.now() + Math.random(), meal, name, cal, pro, carb, fat });
+      renderFoodQueue();
+      showToast("Ditambahkan ke daftar list!");
+    }
+
+    function removeFromQueue(id) {
+      foodQueue = foodQueue.filter(item => item.id !== id);
+      renderFoodQueue();
+    }
+
+    function renderFoodQueue() {
+      const list = document.getElementById("food-queue-list");
+      document.getElementById("queue-count").textContent = foodQueue.length;
+      const totalCal = foodQueue.reduce((acc, cur) => acc + cur.cal, 0);
+      document.getElementById("queue-total-cal").textContent = `Total: ${totalCal} kkal`;
+
+      if (foodQueue.length === 0) {
+        list.innerHTML = `<p class="text-slate-400 text-center py-3">Belum ada makanan ditambahkan ke list.</p>`;
+        return;
+      }
+
+      list.innerHTML = foodQueue.map(item => `
+        <div class="py-2.5 flex items-center justify-between">
+          <div>
+            <p class="font-bold text-slate-800">[${item.meal}] ${item.name}</p>
+            <p class="text-[10px] text-slate-500">${item.cal} kkal · P:${item.pro}g · K:${item.carb}g · L:${item.fat}g</p>
+          </div>
+          <button type="button" onclick="removeFromQueue(${item.id})" class="text-rose-600 hover:text-rose-800 font-bold p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        </div>
+      `).join("");
+      lucide.createIcons();
+    }
+
+    function saveAllFoodQueue() {
+      if (foodQueue.length === 0) return showToast("Daftar list makanan masih kosong!");
+      const date = document.getElementById("global-date").value;
+
+      foodQueue.forEach(item => {
+        db.foods.push({
+          id: Date.now() + Math.random(),
+          date,
+          meal: item.meal,
+          name: item.name,
+          cal: item.cal,
+          pro: item.pro,
+          carb: item.carb,
+          fat: item.fat
+        });
+      });
+
+      saveDB();
+      closeModal("food-modal");
+      renderAll();
+      showToast("Semua makanan berhasil disimpan!");
+    }
+
+    function deleteFood(id) {
+      db.foods = db.foods.filter(f => f.id !== id);
+      saveDB();
+      renderAll();
+      showToast("Log makanan dihapus.");
+    }
+
+    function clearDailyFood() {
+      const date = document.getElementById("global-date").value;
+      db.foods = db.foods.filter(f => f.date !== date);
+      saveDB();
+      renderAll();
+      showToast("Semua log makanan hari ini dibersihkan.");
+    }
+
+    function filterFood(type) {
+      currentFilter = type;
+      document.querySelectorAll(".food-filter-btn").forEach(b => {
+        b.classList.remove("active", "bg-emerald-700", "text-white");
+        b.classList.add("bg-slate-100", "text-slate-600");
+      });
+      event.target.classList.add("active", "bg-emerald-700", "text-white");
+      renderFoodList();
+    }
+
+    function renderFoodList() {
+      const date = document.getElementById("global-date").value;
+      let foods = db.foods.filter(f => f.date === date);
+
+      if (currentFilter === 'high-protein') foods = foods.filter(f => f.pro >= 15);
+      if (currentFilter === 'high-carbs') foods = foods.filter(f => f.carb >= 30);
+      if (currentFilter === 'low-fat') foods = foods.filter(f => f.fat <= 5);
+
+      const list = document.getElementById("food-log-list");
+      if (foods.length === 0) {
+        list.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Belum ada catatan makanan untuk filter ini.</div>`;
+        return;
+      }
+
+      list.innerHTML = foods.map(f => {
+        const badgeColor = f.meal === 'Pagi' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                           f.meal === 'Siang' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                           f.meal === 'Malam' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        return `
+          <div class="p-4 flex items-center justify-between hover:bg-slate-50/50 transition">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold border ${badgeColor}">${f.meal}</span>
+                <h4 class="font-bold text-slate-800 text-sm">${f.name}</h4>
+              </div>
+              <p class="text-xs text-slate-500">P ${f.pro}g · K ${f.carb}g · L ${f.fat}g</p>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="font-extrabold text-slate-800 text-sm">${f.cal} kkal</span>
+              <button onclick="deleteFood(${f.id})" class="text-xs font-bold text-rose-600 hover:bg-rose-50 p-2 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+          </div>
+        `;
+      }).join("");
+      lucide.createIcons();
+    }
+
+    // Workout & Weekly Schedule Rendering
+    function changeWorkoutSplit() {
+      const split = document.getElementById("pilih-split-dropdown").value;
+      db.profile.selectedSplit = split;
+      saveDB();
+      renderWeeklyWorkouts();
+    }
+
+    function renderWeeklyWorkouts() {
+      const pilih_split = db.profile.selectedSplit || "Push / Pull / Legs";
+      document.getElementById("pilih-split-dropdown").value = pilih_split;
+      document.getElementById("workout-program-title").textContent = `Jadwal Latihan: ${pilih_split}`;
+
+      const program = WORKOUT_PROGRAMS[pilih_split] || WORKOUT_PROGRAMS["Push / Pull / Legs"];
+      const container = document.getElementById("weekly-workout-container");
+
+      container.innerHTML = Object.entries(program).map(([day, exercises]) => `
+        <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
+          <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
+            <h4 class="font-extrabold text-slate-800 text-sm">${day}</h4>
+            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">${exercises.length} Menu</span>
+          </div>
+          <div class="space-y-2">
+            ${exercises.map(([name, detail]) => `
+              <div class="bg-white p-2.5 rounded-xl border border-slate-100 shadow-2xs">
+                <p class="font-bold text-slate-700 text-xs">${name}</p>
+                <p class="text-[11px] text-slate-500">${detail}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openWorkoutModal() { openModal("workout-modal"); }
+    function saveWorkoutLog() {
+      const typeStr = document.getElementById("workout-type").value;
+      const duration = Number(document.getElementById("workout-duration").value) || 30;
+      const met = typeStr.includes("8") ? 8 : typeStr.includes("7") ? 7 : 6;
+      const weight = db.profile.weight || 65;
+      const burned = Math.round((met * 3.5 * weight / 200) * duration);
+
+      db.workouts.push({ id: Date.now(), date: document.getElementById("global-date").value, type: typeStr.split(" (")[0], duration, burned });
+      saveDB();
+      closeModal("workout-modal");
+      renderWorkoutsLog();
+      showToast(`Workout dicatat! Pembakaran ~${burned} kkal.`);
+    }
+
+    function renderWorkoutsLog() {
+      const list = document.getElementById("workout-log-list");
+      if (db.workouts.length === 0) {
+        list.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Belum ada log latihan tercatat.</div>`;
+        return;
+      }
+      list.innerHTML = db.workouts.map(w => `
+        <div class="p-4 flex items-center justify-between">
+          <div>
+            <h4 class="font-bold text-slate-800 text-sm">${w.type}</h4>
+            <p class="text-xs text-slate-500">Durasi: ${w.duration} Menit · Tanggal: ${w.date}</p>
+          </div>
+          <span class="font-extrabold text-emerald-700 text-sm">~${w.burned} kkal</span>
+        </div>
+      `).join("");
+    }
+
+    function openWeightModal() { openModal("weight-modal"); }
+    function saveWeightLog() {
+      const w = Number(document.getElementById("input-weight-val").value);
+      const t = Number(document.getElementById("input-weight-target").value);
+      if (!w) return showToast("Masukkan berat badan.");
+      db.profile.weight = w;
+      db.weights.push({ date: document.getElementById("global-date").value, weight: w, target: t || db.profile.weight });
+      saveDB();
+      closeModal("weight-modal");
+      renderWeightScreen();
+      showToast("Berat badan diperbarui!");
+    }
+
+    function renderWeightScreen() {
+      const curr = db.profile.weight;
+      const target = db.weights.at(-1)?.target || 58;
+      document.getElementById("stat-current-w").textContent = curr + " kg";
+      document.getElementById("stat-target-w").textContent = target + " kg";
+      document.getElementById("stat-diff-w").textContent = (curr - target).toFixed(1) + " kg";
+
+      const ctx = document.getElementById("weightTrendChart").getContext("2d");
+      if (weightTrendChartInstance) weightTrendChartInstance.destroy();
+      weightTrendChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: db.weights.map(x => x.date),
+          datasets: [{ label: 'Berat Badan (kg)', data: db.weights.map(x => x.weight), borderColor: '#047857', backgroundColor: 'rgba(4, 120, 87, 0.1)', fill: true, tension: 0.3 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    function calculateBMRAndTDEE() {
+      const name = document.getElementById("profile-name-input").value.trim();
+      const age = Number(document.getElementById("calc-age").value);
+      const weight = Number(document.getElementById("calc-weight").value);
+      const height = Number(document.getElementById("calc-height").value);
+      const activity = Number(document.getElementById("calc-activity").value);
+      const goal = document.getElementById("calc-goal").value;
+
+      const bmr = Math.round(10 * weight + 6.25 * height - 5 * age + 5);
+      let tdee = Math.round(bmr * activity);
+      if (goal === 'deficit') tdee -= 500;
+      if (goal === 'surplus') tdee += 300;
+
+      if (name) db.profile.name = name;
+      db.profile.age = age;
+      db.profile.weight = weight;
+      db.profile.height = height;
+      db.profile.activity = activity;
+      db.profile.goal = goal;
+      db.profile.targetCal = tdee;
+      db.profile.targetProtein = Math.round(weight * 1.8);
+      saveDB();
+      renderDashboardSummary();
+      showToast("Profil & target kalori berhasil disimpan!");
+    }
+
+    function renderDashboardSummary() {
+      const date = document.getElementById("global-date").value;
+      const todayFoods = db.foods.filter(f => f.date === date);
+      const totals = todayFoods.reduce((acc, f) => ({
+        cal: acc.cal + f.cal,
+        pro: acc.pro + f.pro,
+        carb: acc.carb + f.carb,
+        fat: acc.fat + f.fat
+      }), { cal: 0, pro: 0, carb: 0, fat: 0 });
+
+      const targetCal = db.profile.targetCal || 2000;
+      const targetPro = db.profile.targetProtein || 120;
+
+      document.getElementById("welcome-title").textContent = `Halo, ${db.profile.name || 'Pengguna'}! 👋`;
+      document.getElementById("profile-name-input").value = db.profile.name || '';
+      document.getElementById("calc-age").value = db.profile.age || 22;
+      document.getElementById("calc-weight").value = db.profile.weight || 65;
+      document.getElementById("calc-height").value = db.profile.height || 170;
+      document.getElementById("calc-activity").value = db.profile.activity || 1.55;
+      document.getElementById("calc-goal").value = db.profile.goal || 'deficit';
+
+      document.getElementById("dash-rem-cal").textContent = Math.max(0, targetCal - totals.cal);
+      document.getElementById("dash-cons-cal").textContent = totals.cal + " kkal dikonsumsi";
+      document.getElementById("dash-pro").textContent = totals.pro + "g";
+      document.getElementById("dash-carb").textContent = totals.carb + "g";
+      document.getElementById("dash-fat").textContent = totals.fat + "g";
+
+      document.getElementById("res-bmr").textContent = Math.round(10 * db.profile.weight + 6.25 * db.profile.height - 5 * db.profile.age + 5) + " kkal";
+      document.getElementById("res-tdee").textContent = targetCal + " kkal";
+      document.getElementById("streak-count").textContent = `🔥 ${db.streak} Hari`;
+
+      const splitPro = Math.round(targetPro / 4);
+      document.getElementById("protein-timing-list").innerHTML = ['Pagi (Sarapan)', 'Siang', 'Malam', 'Camilan'].map(meal => {
+        const consumed = todayFoods.filter(f => f.meal === meal).reduce((s, f) => s + f.pro, 0);
+        return `<div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl"><span>${meal}</span><span class="font-bold text-emerald-700">${consumed} / ${splitPro}g</span></div>`;
+      }).join("");
+
+      renderCharts(totals);
+    }
+
+    function renderCharts(totals) {
+      const pieCtx = document.getElementById("macroPieChart").getContext("2d");
+      if (macroPieChartInstance) macroPieChartInstance.destroy();
+      macroPieChartInstance = new Chart(pieCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Protein (g)', 'Karbo (g)', 'Lemak (g)'],
+          datasets: [{ data: [totals.pro || 1, totals.carb || 1, totals.fat || 1], backgroundColor: ['#3b82f6', '#f59e0b', '#f43f5e'] }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      const mealCtx = document.getElementById("mealBarChart").getContext("2d");
+      if (mealBarChartInstance) mealBarChartInstance.destroy();
+      const date = document.getElementById("global-date").value;
+      const todayFoods = db.foods.filter(f => f.date === date);
+      const mealCals = ['Pagi', 'Siang', 'Malam', 'Camilan'].map(m => todayFoods.filter(f => f.meal === m).reduce((s, f) => s + f.cal, 0));
+
+      mealBarChartInstance = new Chart(mealCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Pagi', 'Siang', 'Malam', 'Camilan'],
+          datasets: [{ label: 'Kalori per Waktu Makan', data: mealCals, backgroundColor: '#047857', borderRadius: 8 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      const sevenCtx = document.getElementById("sevenDayCalorieChart").getContext("2d");
+      if (sevenDayChartInstance) sevenDayChartInstance.destroy();
+      sevenDayChartInstance = new Chart(sevenCtx, {
+        type: 'bar',
+        data: {
+          labels: ['H-6', 'H-5', 'H-4', 'H-3', 'H-2', 'Kemarin', 'Hari Ini'],
+          datasets: [{ label: 'Asupan Kalori', data: [1800, 1950, 2100, 1750, 1900, 2050, totals.cal], backgroundColor: '#10b981', borderRadius: 8 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    function syncToCloud() {
+      const url = document.getElementById("sheets-url").value;
+      if (!url) return showToast("Masukkan webhook URL Google Sheets.");
+      fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(db) })
+        .then(() => showToast("Data berhasil disinkronisasi ke Cloud!"))
+        .catch(() => showToast("Gagal menyinkronkan data."));
+    }
+
+    function downloadPDFReport() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(18);
+      doc.text("Laporan Kesehatan & Nutrisi Harian", 14, 20);
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Nama Pengguna: ${db.profile.name || 'Pengguna'}`, 14, 28);
+      doc.text(`Tanggal: ${document.getElementById("global-date").value}`, 14, 35);
+      doc.text(`Target Kalori TDEE: ${db.profile.targetCal} kkal`, 14, 42);
+      doc.text(`Berat Badan Saat Ini: ${db.profile.weight} kg`, 14, 49);
+
+      let y = 60;
+      doc.setFont("helvetica", "bold");
+      doc.text("Daftar Konsumsi Makanan:", 14, y);
+      y += 8;
+
+      db.foods.filter(f => f.date === document.getElementById("global-date").value).forEach((f, index) => {
+        doc.setFont("helvetica", "normal");
+        doc.text(`${index + 1}. [${f.meal}] ${f.name} - ${f.cal} kkal (P:${f.pro}g, K:${f.carb}g, L:${f.fat}g)`, 14, y);
+        y += 7;
+      });
+
+      doc.save("Laporan-Kesehatan-Pro.pdf");
+      showToast("Laporan PDF berhasil diunduh!");
+    }
+
+    function renderAll() {
+      renderDashboardSummary();
+      renderFoodList();
+      renderWater();
+      renderWorkoutsLog();
+      renderWeeklyWorkouts();
+      renderWeightScreen();
+    }
+
+    document.getElementById("global-date").onchange = renderAll;
+    renderAll();
+  </script>
+</body>
+</html>
