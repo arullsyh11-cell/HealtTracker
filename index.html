@@ -185,7 +185,7 @@
       </div>
     </section>
 
-    <!-- 2. SCREEN: PROFIL & KALKULATOR TDEE (Dipindah ke atas sesuai request) -->
+    <!-- 2. SCREEN: PROFIL & KALKULATOR TDEE -->
     <section id="screen-calculator" class="screen space-y-6">
       <header>
         <h2 class="text-2xl font-extrabold text-slate-800">Profil & Kalkulator TDEE</h2>
@@ -393,7 +393,7 @@
 
   </main>
 
-  <!-- MODAL: TAMBAH MAKANAN (MULTI-ITEM) -->
+  <!-- MODAL: TAMBAH MAKANAN (MULTI-ITEM DENGAN SEARCH BAR) -->
   <div id="food-modal" class="modal-backdrop fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white w-full max-w-xl rounded-3xl p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center">
@@ -401,12 +401,18 @@
         <button onclick="closeModal('food-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">Pilih dari Database Lokal</label>
-          <select id="food-db-select" onchange="selectFoodPreset()" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
-            <option value="">-- Pilih Makanan Lokal --</option>
-          </select>
+        
+        <!-- SEARCH BAR DATABASE LOKAL -->
+        <div class="relative">
+          <label class="block text-xs font-bold text-slate-600 mb-1">Cari dari Database Makanan Lokal</label>
+          <div class="relative">
+            <input type="text" id="food-search-input" placeholder="Ketik nama makanan (cth: Ayam, Nasi, Oatmeal)..." oninput="filterFoodDatabase()" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+          </div>
+          <!-- Hasil Pencarian Dropdown Box -->
+          <div id="food-search-results" class="hidden absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-48 overflow-y-auto divide-y divide-slate-100"></div>
         </div>
+
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">Waktu Makan</label>
           <select id="food-meal-time" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
@@ -645,17 +651,60 @@
       document.getElementById(id).classList.remove("flex"); 
     }
 
-    function initFoodDropdown() {
-      const select = document.getElementById("food-db-select");
-      select.innerHTML = '<option value="">-- Pilih Makanan Lokal --</option>';
-      for (const [name, data] of Object.entries(DATABASE_MAKANAN)) {
-        const opt = document.createElement("option");
-        opt.value = name;
-        opt.textContent = `${name} (${data.kalori} kkal)`;
-        select.appendChild(opt);
+    // Fungsi untuk memfilter database makanan secara real-time berdasarkan input search bar
+    function filterFoodDatabase() {
+      const keyword = document.getElementById("food-search-input").value.toLowerCase();
+      const resultsContainer = document.getElementById("food-search-results");
+
+      if (!keyword.trim()) {
+        resultsContainer.classList.add("hidden");
+        return;
       }
+
+      const matches = Object.entries(DATABASE_MAKANAN).filter(([name]) => 
+        name.toLowerCase().includes(keyword)
+      );
+
+      if (matches.length === 0) {
+        resultsContainer.innerHTML = `<div class="p-3 text-xs text-slate-400 text-center">Makanan tidak ditemukan</div>`;
+        resultsContainer.classList.remove("hidden");
+        return;
+      }
+
+      resultsContainer.innerHTML = matches.map(([name, data]) => `
+        <div onclick="selectFoodFromSearch('${name.replace(/'/g, "\\'")}')" class="p-2.5 hover:bg-slate-50 cursor-pointer text-xs flex justify-between items-center transition">
+          <span class="font-bold text-slate-700">${name}</span>
+          <span class="text-emerald-700 font-semibold">${data.kalori} kkal</span>
+        </div>
+      `).join("");
+
+      resultsContainer.classList.remove("hidden");
     }
-    initFoodDropdown();
+
+    // Fungsi saat salah satu hasil pencarian diklik
+    function selectFoodFromSearch(name) {
+      const data = DATABASE_MAKANAN[name];
+      if (!data) return;
+
+      document.getElementById("food-search-input").value = name;
+      document.getElementById("food-search-results").classList.add("hidden");
+
+      // Otomatis mengisi form input nutrisi
+      document.getElementById("food-name").value = name;
+      document.getElementById("food-cal").value = data.kalori;
+      document.getElementById("food-pro").value = data.protein;
+      document.getElementById("food-carb").value = data.karbo;
+      document.getElementById("food-fat").value = data.lemak;
+    }
+
+    // Sembunyikan dropdown hasil pencarian jika klik di luar
+    document.addEventListener("click", (e) => {
+      const searchInput = document.getElementById("food-search-input");
+      const resultsContainer = document.getElementById("food-search-results");
+      if (searchInput && resultsContainer && !searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+        resultsContainer.classList.add("hidden");
+      }
+    });
 
     document.querySelectorAll('.modal-backdrop').forEach(modal => {
       modal.onclick = (e) => {
@@ -699,20 +748,10 @@
       document.getElementById("water-progress").style.width = pct + "%";
     }
 
-    function selectFoodPreset() {
-      const name = document.getElementById("food-db-select").value;
-      if (!name) return;
-      const data = DATABASE_MAKANAN[name];
-      if (!data) return;
-      document.getElementById("food-name").value = name;
-      document.getElementById("food-cal").value = data.kalori;
-      document.getElementById("food-pro").value = data.protein;
-      document.getElementById("food-carb").value = data.karbo;
-      document.getElementById("food-fat").value = data.lemak;
-    }
-
     function openFoodModal() { 
       foodQueue = [];
+      document.getElementById("food-search-input").value = "";
+      document.getElementById("food-search-results").classList.add("hidden");
       renderFoodQueue();
       openModal("food-modal"); 
     }
