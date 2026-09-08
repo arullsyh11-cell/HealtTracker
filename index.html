@@ -29,10 +29,10 @@
   <!-- NAVIGATION (SIDEBAR DESKTOP & HORIZONTAL SCROLL MOBILE) -->
   <aside class="w-full md:w-64 bg-white border-b md:border-r border-slate-200 flex flex-col justify-between shrink-0 sticky top-0 z-50 shadow-sm md:shadow-none">
     <div>
-      <!-- Header Logo hanya muncul di desktop atau layar besar, bisa disesuaikan -->
+      <!-- Header Logo & Nama Aplikasi -->
       <div class="p-4 md:p-6 flex items-center justify-between md:justify-start gap-3 border-b border-slate-100 bg-white">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-emerald-700 flex items-center justify-center text-white font-bold text-xl shadow-md">H</div>
+          <img src="logo.png" alt="Logo Aplikasi" class="w-9 h-9 md:w-10 md:h-10 object-contain rounded-xl shadow-md">
           <div>
             <h1 class="font-extrabold text-slate-800 tracking-tight text-sm md:text-base">HealthTracker</h1>
             <p class="text-[10px] md:text-xs text-slate-400">Pro Edition</p>
@@ -44,12 +44,11 @@
         </div>
       </div>
 
-      <!-- Menu Navigasi: Diubah jadi flex overflow-x-auto agar geser ke samping di HP -->
+      <!-- Menu Navigasi -->
       <nav class="flex md:flex-col overflow-x-auto no-scrollbar p-2 md:p-4 space-x-2 md:space-x-0 md:space-y-1 bg-white">
         <button type="button" data-tab="dashboard" class="nav-item active whitespace-nowrap md:whitespace-normal shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
           <i data-lucide="layout-dashboard" class="w-4 h-4 md:w-5 md:h-5"></i> Dashboard
         </button>
-        <!-- Profil & Kalkulator TDEE dipindah ke urutan paling atas sesuai request -->
         <button type="button" data-tab="calculator" class="nav-item whitespace-nowrap md:whitespace-normal shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
           <i data-lucide="calculator" class="w-4 h-4 md:w-5 md:h-5"></i> Profil & Kalkulator TDEE
         </button>
@@ -274,10 +273,10 @@
 
       <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center gap-3">
         <span class="text-xs font-bold text-slate-500 uppercase">Filter Cepat:</span>
-        <button type="button" onclick="filterFood('all')" class="food-filter-btn active bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">Semua</button>
-        <button type="button" onclick="filterFood('high-protein')" class="food-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition">Tinggi Protein (&ge;15g)</button>
-        <button type="button" onclick="filterFood('high-carbs')" class="food-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition">Tinggi Karbo</button>
-        <button type="button" onclick="filterFood('low-fat')" class="food-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition">Rendah Lemak</button>
+        <button type="button" onclick="filterFood('all', this)" class="food-filter-btn active bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">Semua</button>
+        <button type="button" onclick="filterFood('high-protein', this)" class="food-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition">Tinggi Protein (&ge;15g)</button>
+        <button type="button" onclick="filterFood('high-carbs', this)" class="food-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition">Tinggi Karbo</button>
+        <button type="button" onclick="filterFood('low-fat', this)" class="food-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold transition">Rendah Lemak</button>
       </div>
 
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -651,7 +650,7 @@
       document.getElementById(id).classList.remove("flex"); 
     }
 
-    // Fungsi untuk memfilter database makanan secara real-time berdasarkan input search bar
+    // Memfilter database makanan secara real-time
     function filterFoodDatabase() {
       const keyword = document.getElementById("food-search-input").value.toLowerCase();
       const resultsContainer = document.getElementById("food-search-results");
@@ -681,7 +680,7 @@
       resultsContainer.classList.remove("hidden");
     }
 
-    // Fungsi saat salah satu hasil pencarian diklik
+    // Pilih makanan dari hasil pencarian
     function selectFoodFromSearch(name) {
       const data = DATABASE_MAKANAN[name];
       if (!data) return;
@@ -689,7 +688,6 @@
       document.getElementById("food-search-input").value = name;
       document.getElementById("food-search-results").classList.add("hidden");
 
-      // Otomatis mengisi form input nutrisi
       document.getElementById("food-name").value = name;
       document.getElementById("food-cal").value = data.kalori;
       document.getElementById("food-pro").value = data.protein;
@@ -838,13 +836,16 @@
       showToast("Semua log makanan hari ini dibersihkan.");
     }
 
-    function filterFood(type) {
+    function filterFood(type, btnTarget) {
       currentFilter = type;
       document.querySelectorAll(".food-filter-btn").forEach(b => {
         b.classList.remove("active", "bg-emerald-700", "text-white");
         b.classList.add("bg-slate-100", "text-slate-600");
       });
-      event.target.classList.add("active", "bg-emerald-700", "text-white");
+      if (btnTarget) {
+        btnTarget.classList.add("active", "bg-emerald-700", "text-white");
+        btnTarget.classList.remove("bg-slate-100", "text-slate-600");
+      }
       renderFoodList();
     }
 
@@ -1077,7 +1078,6 @@
         options: { responsive: true, maintainAspectRatio: false }
       });
 
-      // Menghitung riwayat kalori 7 hari terakhir berdasarkan data log makanan asli (db.foods)
       const sevenDaysLabels = [];
       const sevenDaysData = [];
       for (let i = 6; i >= 0; i--) {
@@ -1152,6 +1152,7 @@
       renderWorkoutsLog();
       renderWeeklyWorkouts();
       renderWeightScreen();
+      lucide.createIcons();
     }
 
     document.getElementById("global-date").onchange = renderAll;
