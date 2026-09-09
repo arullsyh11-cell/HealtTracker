@@ -16,59 +16,50 @@
     .screen { display: none; }
     .screen.active { display: block; }
     .nav-item.active { background-color: #e5f0f2; color: #1b5e20; font-weight: 700; }
+    /* Khusus bottom nav active state */
+    .nav-item-mobile.active { color: #047857; font-weight: 800; }
     .toast { transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
     .toast.show { transform: translateY(0); opacity: 1; }
-    /* Hide scrollbar for Chrome, Safari and Opera */
     .no-scrollbar::-webkit-scrollbar { display: none; }
-    /* Hide scrollbar for IE, Edge and Firefox */
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row">
+<body class="min-h-screen flex flex-col md:flex-row pb-20 md:pb-0">
 
-  <!-- NAVIGATION (SIDEBAR DESKTOP & HORIZONTAL SCROLL MOBILE) -->
-  <aside class="w-full md:w-64 bg-white border-b md:border-r border-slate-200 flex flex-col justify-between shrink-0 sticky top-0 z-50 shadow-sm md:shadow-none">
+  <!-- ASIDE / SIDEBAR DESKTOP (5 Menu Utama) -->
+  <aside class="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col justify-between shrink-0 sticky top-0 h-screen z-50">
     <div>
       <!-- Header Logo & Nama Aplikasi -->
-      <div class="p-4 md:p-6 flex items-center justify-between md:justify-start gap-3 border-b border-slate-100 bg-white">
-        <div class="flex items-center gap-3">
-          <img src="logo2.png" alt="Logo Aplikasi" class="w-9 h-9 md:w-10 md:h-10 object-contain rounded-xl shadow-md">
-          <div>
-            <h1 class="font-extrabold text-slate-800 tracking-tight text-sm md:text-base">HealthTracker</h1>
-            <p class="text-[10px] md:text-xs text-slate-400">Pro Edition</p>
-          </div>
-        </div>
-        <!-- Streak badge versi mobile di header -->
-        <div class="block md:hidden bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100 text-right">
-          <p id="streak-count-mob" class="text-xs font-black text-emerald-700">🔥 0 Hari</p>
+      <div class="p-6 flex items-center gap-3 border-b border-slate-100 bg-white">
+        <img src="logo2.png" alt="Logo Aplikasi" class="w-10 h-10 object-contain rounded-xl shadow-md">
+        <div>
+          <h1 class="font-extrabold text-slate-800 tracking-tight text-base">HealthTracker</h1>
+          <p class="text-xs text-slate-400">Pro Edition</p>
         </div>
       </div>
 
-      <!-- Menu Navigasi -->
-      <nav class="flex md:flex-col overflow-x-auto no-scrollbar p-2 md:p-4 space-x-2 md:space-x-0 md:space-y-1 bg-white">
-        <button type="button" data-tab="dashboard" class="nav-item active whitespace-nowrap md:whitespace-normal shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
-          <i data-lucide="layout-dashboard" class="w-4 h-4 md:w-5 md:h-5"></i> Dashboard
+      <!-- Menu Navigasi Desktop -->
+      <nav class="flex flex-col p-4 space-y-1 bg-white">
+        <button type="button" data-tab="calculator" class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="calculator" class="w-5 h-5"></i> Profil & TDEE
         </button>
-        <button type="button" data-tab="calculator" class="nav-item whitespace-nowrap md:whitespace-normal shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
-          <i data-lucide="calculator" class="w-4 h-4 md:w-5 md:h-5"></i> Profil & Kalkulator TDEE
+        <button type="button" data-tab="dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard Utama
         </button>
-        <button type="button" data-tab="food" class="nav-item whitespace-nowrap md:whitespace-normal shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
-          <i data-lucide="utensils" class="w-4 h-4 md:w-5 md:h-5"></i> Makanan & Nutrisi
+        <button type="button" data-tab="food" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="utensils" class="w-5 h-5"></i> Makanan & Nutrisi
         </button>
-        <button type="button" data-tab="workout" class="nav-item whitespace-nowrap md:whitespace-normal shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
-          <i data-lucide="dumbbell" class="w-4 h-4 md:w-5 md:h-5"></i> Jadwal & Latihan
+        <button type="button" data-tab="workout" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="dumbbell" class="w-5 h-5"></i> Jadwal & Latihan
         </button>
-        <button type="button" data-tab="weight" class="nav-item whitespace-nowrap md:whitespace-normal shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
-          <i data-lucide="scale" class="w-4 h-4 md:w-5 md:h-5"></i> Pantau Berat Badan
-        </button>
-        <button type="button" data-tab="report" class="nav-item whitespace-nowrap md:whitespace-normal shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
-          <i data-lucide="file-text" class="w-4 h-4 md:w-5 md:h-5"></i> Riwayat & Export PDF
+        <button type="button" data-tab="weight" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="scale" class="w-5 h-5"></i> Pantau BB & Riwayat
         </button>
       </nav>
     </div>
     
     <!-- Streak desktop view -->
-    <div class="hidden md:block p-4 border-t border-slate-100">
+    <div class="p-4 border-t border-slate-100">
       <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100">
         <p class="text-xs font-bold text-emerald-800">Streak Konsistensi</p>
         <p id="streak-count" class="text-lg font-black text-emerald-700">🔥 0 Hari</p>
@@ -76,11 +67,97 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT CONTAINER -->
-  <main class="flex-1 p-4 md:p-8 overflow-y-auto pb-24 md:pb-8">
+  <!-- HEADER KHUSUS MOBILE -->
+  <header class="flex md:hidden items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+    <div class="flex items-center gap-2.5">
+      <img src="logo2.png" alt="Logo" class="w-8 h-8 object-contain rounded-lg">
+      <span class="font-extrabold text-slate-800 text-sm">HealthTracker Pro</span>
+    </div>
+    <div class="bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">
+      <p id="streak-count-mob" class="text-xs font-black text-emerald-700">🔥 0 Hari</p>
+    </div>
+  </header>
 
-    <!-- 1. SCREEN: DASHBOARD -->
-    <section id="screen-dashboard" class="screen active space-y-6">
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 p-4 md:p-8 overflow-y-auto pb-28 md:pb-8">
+
+    <!-- 1. SCREEN: PROFIL & KALKULATOR TDEE -->
+    <section id="screen-calculator" class="screen active space-y-6">
+      <header>
+        <h2 class="text-2xl font-extrabold text-slate-800">Profil & Kalkulator TDEE</h2>
+        <p class="text-sm text-slate-500">Atur nama profil, parameter tubuh, serta hitung kebutuhan kalori harianmu.</p>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-extrabold text-slate-800">Identitas & Parameter Tubuh</h3>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Masukan Nama</label>
+              <input type="text" id="profile-name-input" placeholder="Masukkan Nama Kamu..." class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Usia (Tahun)</label>
+              <input type="number" id="calc-age" value="22" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Berat Badan (kg)</label>
+                <input type="number" id="calc-weight" value="65" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Tinggi Badan (cm)</label>
+                <input type="number" id="calc-height" value="170" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Level Aktivitas</label>
+              <select id="calc-activity" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <option value="1.2">Jarang Olahraga (Sedentary)</option>
+                <option value="1.375">Ringan (1-3 hari/minggu)</option>
+                <option value="1.55" selected>Sedang (3-5 hari/minggu)</option>
+                <option value="1.725">Berat (6-7 hari/minggu)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Target Utama</label>
+              <select id="calc-goal" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <option value="deficit" selected>Defisit Kalori (Turun Berat)</option>
+                <option value="maintenance">Maintenance (Jaga Berat)</option>
+                <option value="surplus">Surplus Kalori (Naik Massa Otot)</option>
+              </select>
+            </div>
+            <button onclick="calculateBMRAndTDEE()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">Simpan Profil & Hitung Target</button>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="font-extrabold text-slate-800">Hasil Kalkulasi Ideal</h3>
+            <div class="grid grid-cols-2 gap-4 text-center">
+              <div class="bg-slate-50 p-4 rounded-xl">
+                <p class="text-xs font-bold text-slate-400 uppercase">BMR</p>
+                <h4 id="res-bmr" class="text-xl font-black text-slate-800 mt-1">0 kkal</h4>
+              </div>
+              <div class="bg-emerald-50 p-4 rounded-xl">
+                <p class="text-xs font-bold text-emerald-800 uppercase">Target TDEE</p>
+                <h4 id="res-tdee" class="text-xl font-black text-emerald-700 mt-1">0 kkal</h4>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="font-extrabold text-slate-800">Cloud Sync & Backup Google Sheets</h3>
+            <p class="text-xs text-slate-500">Hubungkan data aplikasimu ke Google Sheets untuk backup otomatis jarak jauh.</p>
+            <input type="text" id="sheets-url" placeholder="Masukkan Webhook URL Google Apps Script..." class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold focus:outline-none">
+            <button onclick="syncToCloud()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs transition">Sinkronisasi Sekarang</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. SCREEN: DASHBOARD UTAMA -->
+    <section id="screen-dashboard" class="screen space-y-6">
       <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 id="welcome-title" class="text-2xl font-extrabold text-slate-800">Dashboard Utama</h2>
@@ -184,81 +261,6 @@
       </div>
     </section>
 
-    <!-- 2. SCREEN: PROFIL & KALKULATOR TDEE -->
-    <section id="screen-calculator" class="screen space-y-6">
-      <header>
-        <h2 class="text-2xl font-extrabold text-slate-800">Profil & Kalkulator TDEE</h2>
-        <p class="text-sm text-slate-500">Atur nama profil, parameter tubuh, serta hitung kebutuhan kalori harianmu.</p>
-      </header>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <h3 class="font-extrabold text-slate-800">Identitas & Parameter Tubuh</h3>
-          <div class="space-y-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Masukan Nama</label>
-              <input type="text" id="profile-name-input" placeholder="Masukkan Nama Kamu..." class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Usia (Tahun)</label>
-              <input type="number" id="calc-age" value="22" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Berat Badan (kg)</label>
-                <input type="number" id="calc-weight" value="65" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Tinggi Badan (cm)</label>
-                <input type="number" id="calc-height" value="170" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Level Aktivitas</label>
-              <select id="calc-activity" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
-                <option value="1.2">Jarang Olahraga (Sedentary)</option>
-                <option value="1.375">Ringan (1-3 hari/minggu)</option>
-                <option value="1.55" selected>Sedang (3-5 hari/minggu)</option>
-                <option value="1.725">Berat (6-7 hari/minggu)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Target Utama</label>
-              <select id="calc-goal" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
-                <option value="deficit" selected>Defisit Kalori (Turun Berat)</option>
-                <option value="maintenance">Maintenance (Jaga Berat)</option>
-                <option value="surplus">Surplus Kalori (Naik Massa Otot)</option>
-              </select>
-            </div>
-            <button onclick="calculateBMRAndTDEE()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">Simpan Profil & Hitung Target</button>
-          </div>
-        </div>
-
-        <div class="space-y-6">
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-            <h3 class="font-extrabold text-slate-800">Hasil Kalkulasi Ideal</h3>
-            <div class="grid grid-cols-2 gap-4 text-center">
-              <div class="bg-slate-50 p-4 rounded-xl">
-                <p class="text-xs font-bold text-slate-400 uppercase">BMR</p>
-                <h4 id="res-bmr" class="text-xl font-black text-slate-800 mt-1">0 kkal</h4>
-              </div>
-              <div class="bg-emerald-50 p-4 rounded-xl">
-                <p class="text-xs font-bold text-emerald-800 uppercase">Target TDEE</p>
-                <h4 id="res-tdee" class="text-xl font-black text-emerald-700 mt-1">0 kkal</h4>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-            <h3 class="font-extrabold text-slate-800">Cloud Sync & Backup Google Sheets</h3>
-            <p class="text-xs text-slate-500">Hubungkan data aplikasimu ke Google Sheets untuk backup otomatis jarak jauh.</p>
-            <input type="text" id="sheets-url" placeholder="Masukkan Webhook URL Google Apps Script..." class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold focus:outline-none">
-            <button onclick="syncToCloud()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs transition">Sinkronisasi Sekarang</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- 3. SCREEN: MAKANAN & NUTRISI -->
     <section id="screen-food" class="screen space-y-6">
       <header class="flex justify-between items-center">
@@ -330,12 +332,12 @@
       </div>
     </section>
 
-    <!-- 5. SCREEN: PANTAU BERAT BADAN -->
+    <!-- 5. SCREEN: PANTAU BERAT BADAN & RIWAYAT / EXPORT PDF -->
     <section id="screen-weight" class="screen space-y-6">
       <header class="flex justify-between items-center">
         <div>
-          <h2 class="text-2xl font-extrabold text-slate-800">Pantau Berat Badan</h2>
-          <p class="text-sm text-slate-500">Catat perkembangan berat badan harian dan lihat tren grafiknya.</p>
+          <h2 class="text-2xl font-extrabold text-slate-800">Pantau Berat Badan & Riwayat</h2>
+          <p class="text-sm text-slate-500">Catat perkembangan berat badan, lihat grafik tren, serta unduh laporan PDF.</p>
         </div>
         <button onclick="openWeightModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center gap-2">
           <i data-lucide="plus" class="w-4 h-4"></i> Catat Berat Badan
@@ -368,31 +370,53 @@
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- 6. SCREEN: RIWAYAT & EXPORT PDF -->
-    <section id="screen-report" class="screen space-y-6">
-      <header class="flex justify-between items-center">
-        <div>
-          <h2 class="text-2xl font-extrabold text-slate-800">Riwayat & Export PDF Report</h2>
-          <p class="text-sm text-slate-500">Unduh laporan harian lengkap dengan makronutrisi dan tabel makanan.</p>
-        </div>
-        <button onclick="downloadPDFReport()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-3 rounded-xl text-sm shadow-md transition flex items-center gap-2">
-          <i data-lucide="download" class="w-4 h-4"></i> Download Laporan PDF
-        </button>
-      </header>
-
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-        <h3 class="font-extrabold text-slate-800">Tren Kalori 7 Hari Terakhir</h3>
-        <div class="h-64 flex items-center justify-center relative">
-          <canvas id="sevenDayCalorieChart"></canvas>
+      <!-- Bagian Riwayat & Export PDF yang Dipindahkan ke Sini -->
+      <div class="grid grid-cols-1 gap-6 pt-4">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h3 class="font-extrabold text-slate-800 text-lg">Riwayat Kalori & Export Laporan</h3>
+              <p class="text-xs text-slate-500">Unduh laporan harian lengkap dan pantau grafik tren kalori 7 hari terakhir.</p>
+            </div>
+            <button onclick="downloadPDFReport()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm shadow-md transition flex items-center gap-2">
+              <i data-lucide="download" class="w-4 h-4"></i> Download Laporan PDF
+            </button>
+          </div>
+          <div class="h-64 flex items-center justify-center relative">
+            <canvas id="sevenDayCalorieChart"></canvas>
+          </div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- MODAL: TAMBAH MAKANAN (MULTI-ITEM DENGAN SEARCH BAR) -->
+  <!-- BOTTOM NAVIGATION BAR (5 Menu Sesuai Sidebar) -->
+  <nav class="flex md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 justify-around items-center px-1 py-2 z-50 shadow-lg">
+    <button type="button" data-tab="circle-user" class="nav-item nav-item-mobile active flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
+      <i data-lucide="circle-user" class="w-5 h-5 mb-0.5"></i>
+      <span class="text-[10px] font-semibold leading-none">Profil</span>
+    </button>
+    <button type="button" data-tab="dashboard" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
+      <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
+      <span class="text-[10px] font-semibold leading-none">Dashboard</span>
+    </button>
+    <button type="button" data-tab="food" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
+      <i data-lucide="utensils" class="w-5 h-5 mb-0.5"></i>
+      <span class="text-[10px] font-semibold leading-none">Makanan</span>
+    </button>
+    <button type="button" data-tab="workout" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
+      <i data-lucide="dumbbell" class="w-5 h-5 mb-0.5"></i>
+      <span class="text-[10px] font-semibold leading-none">Latihan</span>
+    </button>
+    <button type="button" data-tab="weight" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
+      <i data-lucide="scale" class="w-5 h-5 mb-0.5"></i>
+      <span class="text-[10px] font-semibold leading-none">Pantau BB</span>
+    </button>
+  </nav>
+
+  <!-- MODAL: TAMBAH MAKANAN -->
   <div id="food-modal" class="modal-backdrop fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white w-full max-w-xl rounded-3xl p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center">
@@ -513,7 +537,7 @@
   </div>
 
   <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="toast fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-sm font-bold z-50">
+  <div id="toast" class="toast fixed bottom-16 right-6 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-sm font-bold z-50">
     Berhasil disimpan!
   </div>
 
@@ -680,7 +704,6 @@
       resultsContainer.classList.remove("hidden");
     }
 
-    // Pilih makanan dari hasil pencarian
     function selectFoodFromSearch(name) {
       const data = DATABASE_MAKANAN[name];
       if (!data) return;
@@ -695,7 +718,6 @@
       document.getElementById("food-fat").value = data.lemak;
     }
 
-    // Sembunyikan dropdown hasil pencarian jika klik di luar
     document.addEventListener("click", (e) => {
       const searchInput = document.getElementById("food-search-input");
       const resultsContainer = document.getElementById("food-search-results");
@@ -713,19 +735,27 @@
       };
     });
 
+    // Handle klik tab menu (sinkron untuk sidebar desktop & bottom nav mobile)
     document.querySelectorAll(".nav-item").forEach(btn => {
       btn.onclick = () => {
-        document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+        const targetTab = btn.dataset.tab;
+        
+        document.querySelectorAll(".nav-item").forEach(b => {
+          if (b.dataset.tab === targetTab) {
+            b.classList.add("active");
+          } else {
+            b.classList.remove("active");
+          }
+        });
+
         document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById("screen-" + btn.dataset.tab).classList.add("active");
+        document.getElementById("screen-" + targetTab).classList.add("active");
         renderAll();
       };
     });
 
     document.getElementById("global-date").value = new Date().toISOString().slice(0,10);
 
-    // Hydration functions
     function addWater(amount) {
       db.water = Math.min(4000, db.water + amount);
       saveDB();
@@ -753,7 +783,8 @@
       renderFoodQueue();
       openModal("food-modal"); 
     }
-    document.getElementById("open-food-modal-dash").onclick = openFoodModal;
+    const dashFoodBtn = document.getElementById("open-food-modal-dash");
+    if (dashFoodBtn) dashFoodBtn.onclick = openFoodModal;
 
     function addFoodToQueue() {
       const name = document.getElementById("food-name").value.trim();
@@ -886,7 +917,6 @@
       lucide.createIcons();
     }
 
-    // Workout & Weekly Schedule Rendering
     function changeWorkoutSplit() {
       const split = document.getElementById("pilih-split-dropdown").value;
       db.profile.selectedSplit = split;
@@ -896,11 +926,14 @@
 
     function renderWeeklyWorkouts() {
       const pilih_split = db.profile.selectedSplit || "Push / Pull / Legs";
-      document.getElementById("pilih-split-dropdown").value = pilih_split;
-      document.getElementById("workout-program-title").textContent = `Jadwal Latihan: ${pilih_split}`;
+      const dropdown = document.getElementById("pilih-split-dropdown");
+      if (dropdown) dropdown.value = pilih_split;
+      const progTitle = document.getElementById("workout-program-title");
+      if (progTitle) progTitle.textContent = `Jadwal Latihan: ${pilih_split}`;
 
       const program = WORKOUT_PROGRAMS[pilih_split] || WORKOUT_PROGRAMS["Push / Pull / Legs"];
       const container = document.getElementById("weekly-workout-container");
+      if (!container) return;
 
       container.innerHTML = Object.entries(program).map(([day, exercises]) => `
         <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
@@ -937,6 +970,7 @@
 
     function renderWorkoutsLog() {
       const list = document.getElementById("workout-log-list");
+      if (!list) return;
       if (db.workouts.length === 0) {
         list.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Belum ada log latihan tercatat.</div>`;
         return;
@@ -968,11 +1002,16 @@
     function renderWeightScreen() {
       const curr = db.profile.weight;
       const target = db.weights.at(-1)?.target || 58;
-      document.getElementById("stat-current-w").textContent = curr + " kg";
-      document.getElementById("stat-target-w").textContent = target + " kg";
-      document.getElementById("stat-diff-w").textContent = (curr - target).toFixed(1) + " kg";
+      const curWEl = document.getElementById("stat-current-w");
+      if (curWEl) curWEl.textContent = curr + " kg";
+      const targetWEl = document.getElementById("stat-target-w");
+      if (targetWEl) targetWEl.textContent = target + " kg";
+      const diffWEl = document.getElementById("stat-diff-w");
+      if (diffWEl) diffWEl.textContent = (curr - target).toFixed(1) + " kg";
 
-      const ctx = document.getElementById("weightTrendChart").getContext("2d");
+      const canvasEl = document.getElementById("weightTrendChart");
+      if (!canvasEl) return;
+      const ctx = canvasEl.getContext("2d");
       if (weightTrendChartInstance) weightTrendChartInstance.destroy();
       weightTrendChartInstance = new Chart(ctx, {
         type: 'line',
@@ -1023,62 +1062,88 @@
       const targetCal = db.profile.targetCal || 2000;
       const targetPro = db.profile.targetProtein || 120;
 
-      document.getElementById("welcome-title").textContent = `Halo, ${db.profile.name || 'Pengguna'}! 👋`;
-      document.getElementById("profile-name-input").value = db.profile.name || '';
-      document.getElementById("calc-age").value = db.profile.age || 22;
-      document.getElementById("calc-weight").value = db.profile.weight || 65;
-      document.getElementById("calc-height").value = db.profile.height || 170;
-      document.getElementById("calc-activity").value = db.profile.activity || 1.55;
-      document.getElementById("calc-goal").value = db.profile.goal || 'deficit';
-
-      document.getElementById("dash-rem-cal").textContent = Math.max(0, targetCal - Math.round(totals.cal));
-      document.getElementById("dash-cons-cal").textContent = Math.round(totals.cal) + " kkal dikonsumsi";
+      const welcomeTitle = document.getElementById("welcome-title");
+      if (welcomeTitle) welcomeTitle.textContent = `Halo, ${db.profile.name || 'Pengguna'}! 👋`;
       
-      // Menggunakan .toFixed(1) agar angka desimal dibulatkan rapi (maksimal 1 angka di belakang koma)
-      document.getElementById("dash-pro").textContent = totals.pro.toFixed(1).replace(/\.0$/, '') + "g";
-      document.getElementById("dash-carb").textContent = totals.carb.toFixed(1).replace(/\.0$/, '') + "g";
-      document.getElementById("dash-fat").textContent = totals.fat.toFixed(1).replace(/\.0$/, '') + "g";
+      const profileNameInput = document.getElementById("profile-name-input");
+      if (profileNameInput) profileNameInput.value = db.profile.name || '';
+      const calcAge = document.getElementById("calc-age");
+      if (calcAge) calcAge.value = db.profile.age || 22;
+      const calcWeight = document.getElementById("calc-weight");
+      if (calcWeight) calcWeight.value = db.profile.weight || 65;
+      const calcHeight = document.getElementById("calc-height");
+      if (calcHeight) calcHeight.value = db.profile.height || 170;
+      const calcActivity = document.getElementById("calc-activity");
+      if (calcActivity) calcActivity.value = db.profile.activity || 1.55;
+      const calcGoal = document.getElementById("calc-goal");
+      if (calcGoal) calcGoal.value = db.profile.goal || 'deficit';
 
-      document.getElementById("res-bmr").textContent = Math.round(10 * db.profile.weight + 6.25 * db.profile.height - 5 * db.profile.age + 5) + " kkal";
-      document.getElementById("res-tdee").textContent = targetCal + " kkal";
-      document.getElementById("streak-count").textContent = `🔥 ${db.streak} Hari`;
-      document.getElementById("streak-count-mob").textContent = `🔥 ${db.streak} Hari`;
+      const dashRemCal = document.getElementById("dash-rem-cal");
+      if (dashRemCal) dashRemCal.textContent = Math.max(0, targetCal - Math.round(totals.cal));
+      const dashConsCal = document.getElementById("dash-cons-cal");
+      if (dashConsCal) dashConsCal.textContent = Math.round(totals.cal) + " kkal dikonsumsi";
+      
+      const dashPro = document.getElementById("dash-pro");
+      if (dashPro) dashPro.textContent = totals.pro.toFixed(1).replace(/\.0$/, '') + "g";
+      const dashCarb = document.getElementById("dash-carb");
+      if (dashCarb) dashCarb.textContent = totals.carb.toFixed(1).replace(/\.0$/, '') + "g";
+      const dashFat = document.getElementById("dash-fat");
+      if (dashFat) dashFat.textContent = totals.fat.toFixed(1).replace(/\.0$/, '') + "g";
+
+      const resBmr = document.getElementById("res-bmr");
+      if (resBmr) resBmr.textContent = Math.round(10 * db.profile.weight + 6.25 * db.profile.height - 5 * db.profile.age + 5) + " kkal";
+      const resTdee = document.getElementById("res-tdee");
+      if (resTdee) resTdee.textContent = targetCal + " kkal";
+      
+      const streakCount = document.getElementById("streak-count");
+      if (streakCount) streakCount.textContent = `🔥 ${db.streak} Hari`;
+      const streakCountMob = document.getElementById("streak-count-mob");
+      if (streakCountMob) streakCountMob.textContent = `🔥 ${db.streak} Hari`;
 
       const splitPro = Math.round(targetPro / 4);
-      document.getElementById("protein-timing-list").innerHTML = ['Pagi', 'Siang', 'Malam', 'Camilan'].map(meal => {
-        const consumed = todayFoods.filter(f => f.meal === meal).reduce((s, f) => s + Number(f.pro), 0);
-        return `<div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl"><span>${meal}</span><span class="font-bold text-emerald-700">${consumed.toFixed(1).replace(/\.0$/, '')} / ${splitPro}g</span></div>`;
-      }).join("");
+      const timingList = document.getElementById("protein-timing-list");
+      if (timingList) {
+        timingList.innerHTML = ['Pagi', 'Siang', 'Malam', 'Camilan'].map(meal => {
+          const consumed = todayFoods.filter(f => f.meal === meal).reduce((s, f) => s + Number(f.pro), 0);
+          return `<div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl"><span>${meal}</span><span class="font-bold text-emerald-700">${consumed.toFixed(1).replace(/\.0$/, '')} / ${splitPro}g</span></div>`;
+        }).join("");
+      }
 
       renderCharts(totals);
     }
 
     function renderCharts(totals) {
-      const pieCtx = document.getElementById("macroPieChart").getContext("2d");
-      if (macroPieChartInstance) macroPieChartInstance.destroy();
-      macroPieChartInstance = new Chart(pieCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Protein (g)', 'Karbo (g)', 'Lemak (g)'],
-          datasets: [{ data: [totals.pro || 1, totals.carb || 1, totals.fat || 1], backgroundColor: ['#3b82f6', '#f59e0b', '#f43f5e'] }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
+      const pieCanvas = document.getElementById("macroPieChart");
+      if (pieCanvas) {
+        const pieCtx = pieCanvas.getContext("2d");
+        if (macroPieChartInstance) macroPieChartInstance.destroy();
+        macroPieChartInstance = new Chart(pieCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Protein (g)', 'Karbo (g)', 'Lemak (g)'],
+            datasets: [{ data: [totals.pro || 1, totals.carb || 1, totals.fat || 1], backgroundColor: ['#3b82f6', '#f59e0b', '#f43f5e'] }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }
 
-      const mealCtx = document.getElementById("mealBarChart").getContext("2d");
-      if (mealBarChartInstance) mealBarChartInstance.destroy();
-      const date = document.getElementById("global-date").value;
-      const todayFoods = db.foods.filter(f => f.date === date);
-      const mealCals = ['Pagi', 'Siang', 'Malam', 'Camilan'].map(m => todayFoods.filter(f => f.meal === m).reduce((s, f) => s + f.cal, 0));
+      const mealCanvas = document.getElementById("mealBarChart");
+      if (mealCanvas) {
+        const mealCtx = mealCanvas.getContext("2d");
+        if (mealBarChartInstance) mealBarChartInstance.destroy();
+        const date = document.getElementById("global-date").value;
+        const todayFoods = db.foods.filter(f => f.date === date);
+        const mealCals = ['Pagi', 'Siang', 'Malam', 'Camilan'].map(m => todayFoods.filter(f => f.meal === m).reduce((s, f) => s + f.cal, 0));
 
-      mealBarChartInstance = new Chart(mealCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Pagi', 'Siang', 'Malam', 'Camilan'],
-          datasets: [{ label: 'Kalori per Waktu Makan', data: mealCals, backgroundColor: '#047857', borderRadius: 8 }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
+        mealBarChartInstance = new Chart(mealCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Pagi', 'Siang', 'Malam', 'Camilan'],
+            datasets: [{ label: 'Kalori per Waktu Makan', data: mealCals, backgroundColor: '#047857', borderRadius: 8 }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }
 
       const sevenDaysLabels = [];
       const sevenDaysData = [];
@@ -1093,22 +1158,25 @@
         sevenDaysData.push(dayTotal);
       }
 
-      const sevenCtx = document.getElementById("sevenDayCalorieChart").getContext("2d");
-      if (sevenDayChartInstance) sevenDayChartInstance.destroy();
-      sevenDayChartInstance = new Chart(sevenCtx, {
-        type: 'bar',
-        data: {
-          labels: sevenDaysLabels,
-          datasets: [{ label: 'Asupan Kalori', data: sevenDaysData, backgroundColor: '#10b981', borderRadius: 8 }]
-        },
-        options: { 
-          responsive: true, 
-          maintainAspectRatio: false,
-          scales: {
-            y: { beginAtZero: true }
+      const sevenCanvas = document.getElementById("sevenDayCalorieChart");
+      if (sevenCanvas) {
+        const sevenCtx = sevenCanvas.getContext("2d");
+        if (sevenDayChartInstance) sevenDayChartInstance.destroy();
+        sevenDayChartInstance = new Chart(sevenCtx, {
+          type: 'bar',
+          data: {
+            labels: sevenDaysLabels,
+            datasets: [{ label: 'Asupan Kalori', data: sevenDaysData, backgroundColor: '#10b981', borderRadius: 8 }]
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            scales: {
+              y: { beginAtZero: true }
+            }
           }
-        }
-      });
+        });
+      }
     }
 
     function syncToCloud() {
@@ -1157,7 +1225,8 @@
       lucide.createIcons();
     }
 
-    document.getElementById("global-date").onchange = renderAll;
+    const globalDateEl = document.getElementById("global-date");
+    if (globalDateEl) globalDateEl.onchange = renderAll;
     renderAll();
   </script>
 </body>
