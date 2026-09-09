@@ -16,7 +16,6 @@
     .screen { display: none; }
     .screen.active { display: block; }
     .nav-item.active { background-color: #e5f0f2; color: #1b5e20; font-weight: 700; }
-    /* Khusus bottom nav active state */
     .nav-item-mobile.active { color: #047857; font-weight: 800; }
     .toast { transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
     .toast.show { transform: translateY(0); opacity: 1; }
@@ -26,10 +25,9 @@
 </head>
 <body class="min-h-screen flex flex-col md:flex-row pb-20 md:pb-0">
 
-  <!-- ASIDE / SIDEBAR DESKTOP (5 Menu Utama) -->
+  <!-- ASIDE / SIDEBAR DESKTOP -->
   <aside class="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col justify-between shrink-0 sticky top-0 h-screen z-50">
     <div>
-      <!-- Header Logo & Nama Aplikasi -->
       <div class="p-6 flex items-center gap-3 border-b border-slate-100 bg-white">
         <img src="logo2.png" alt="Logo Aplikasi" class="w-10 h-10 object-contain rounded-xl shadow-md">
         <div>
@@ -38,7 +36,6 @@
         </div>
       </div>
 
-      <!-- Menu Navigasi Desktop -->
       <nav class="flex flex-col p-4 space-y-1 bg-white">
         <button type="button" data-tab="calculator" class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
           <i data-lucide="circle-user" class="w-5 h-5"></i> Profil & TDEE
@@ -58,7 +55,6 @@
       </nav>
     </div>
     
-    <!-- Streak desktop view -->
     <div class="p-4 border-t border-slate-100">
       <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100">
         <p class="text-xs font-bold text-emerald-800">Streak Konsistensi</p>
@@ -67,7 +63,7 @@
     </div>
   </aside>
 
-  <!-- HEADER KHUSUS MOBILE -->
+  <!-- HEADER MOBILE -->
   <header class="flex md:hidden items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
     <div class="flex items-center gap-2.5">
       <img src="logo2.png" alt="Logo" class="w-8 h-8 object-contain rounded-lg">
@@ -309,7 +305,6 @@
         </div>
       </header>
 
-      <!-- TAMPILAN JADWAL LATIHAN MINGGUAN -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
           <div>
@@ -319,9 +314,7 @@
           <span class="px-3 py-1 rounded-xl text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">Aktif</span>
         </div>
         
-        <div id="weekly-workout-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Rendered via JS -->
-        </div>
+        <div id="weekly-workout-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </div>
 
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -371,7 +364,6 @@
         </div>
       </div>
 
-      <!-- Bagian Riwayat & Export PDF -->
       <div class="grid grid-cols-1 gap-6 pt-4">
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -392,7 +384,7 @@
 
   </main>
 
-  <!-- BOTTOM NAVIGATION BAR (5 Menu Sesuai Sidebar) -->
+  <!-- BOTTOM NAVIGATION BAR -->
   <nav class="flex md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 justify-around items-center px-1 py-2 z-50 shadow-lg">
     <button type="button" data-tab="calculator" class="nav-item nav-item-mobile active flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
       <i data-lucide="circle-user" class="w-5 h-5 mb-0.5"></i>
@@ -416,7 +408,7 @@
     </button>
   </nav>
 
-  <!-- MODAL: TAMBAH MAKANAN -->
+  <!-- MODAL: TAMBAH MAKANAN & CUSTOM FOOD DENGAN ESTIMASI OTOMATIS -->
   <div id="food-modal" class="modal-backdrop fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white w-full max-w-xl rounded-3xl p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center">
@@ -432,8 +424,28 @@
             <input type="text" id="food-search-input" placeholder="Ketik nama makanan (cth: Ayam, Nasi, Oatmeal)..." oninput="filterFoodDatabase()" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
             <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
           </div>
-          <!-- Hasil Pencarian Dropdown Box -->
           <div id="food-search-results" class="hidden absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-48 overflow-y-auto divide-y divide-slate-100"></div>
+        </div>
+
+        <div class="relative flex py-2 items-center">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider">Atau Ketik Natural (AI Custom Food)</span>
+          <div class="flex-grow border-t border-slate-200"></div>
+        </div>
+
+        <!-- FORM CUSTOM FOOD: INPUT TEKS BEBAS & ESTIMASI OTOMATIS (DISEDERHANAKAN) -->
+        <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-extrabold text-emerald-900 flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-emerald-600"></i> Auto-Estimasi Nutrisi Pintar</span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">AI Smart Extractor</span>
+          </div>
+
+          <!-- INPUT NAMA MAKANAN BEBAS -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">Ketik Apa yang Kamu Makan secara Natural</label>
+            <input type="text" id="custom-food-desc" placeholder="Cth: ayam geprek porsi sedang pakai nasi / hangry chicken..." class="w-full bg-white border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600 shadow-2xs">
+            <p class="text-[10px] text-slate-400 mt-1">Sistem otomatis mendeteksi jenis makanan & estimasi nutrisinya.</p>
+          </div>
         </div>
 
         <div>
@@ -446,8 +458,8 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">Nama Makanan</label>
-          <input type="text" id="food-name" placeholder="cth: Nasi Padang" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+          <label class="block text-xs font-bold text-slate-600 mb-1">Nama Makanan Final</label>
+          <input type="text" id="food-name" placeholder="cth: Ayam Geprek Porsi Sedang Pakai Nasi" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -674,7 +686,52 @@
       document.getElementById(id).classList.remove("flex"); 
     }
 
-    // Memfilter database makanan secara real-time
+    // AI Smart Extractor & Estimasi Otomatis berdasarkan Natural Text Input
+    function triggerAutoEstimate() {
+      const rawText = document.getElementById("custom-food-desc").value.toLowerCase().trim();
+      if (!rawText) return;
+
+      // Set nama makanan final otomatis sama persis dengan ketikan natural pengguna
+      document.getElementById("food-name").value = document.getElementById("custom-food-desc").value.trim();
+
+      // Analisis kata kunci di belakang layar secara natural
+      let baseCal = 300, basePro = 15, baseCarb = 30, baseFat = 10;
+      let multiplier = 1.0;
+
+      // Deteksi porsi dari kata kunci natural
+      if (rawText.includes("kecil") || rawText.includes("mini") || rawText.includes("setengah")) {
+        multiplier = 0.6;
+      } else if (rawText.includes("besar") || rawText.includes("jumbo") || rawText.includes("porsi puas") || rawText.includes("double")) {
+        multiplier = 1.6;
+      }
+
+      // Deteksi jenis makanan berdasarkan keyword umum
+      if (rawText.includes("ayam") || rawText.includes("daging") || rawText.includes("sapi") || rawText.includes("ikan") || rawText.includes("geprek") || rawText.includes("hangry")) {
+        baseCal = 400; basePro = 28; baseCarb = 20; baseFat = 18;
+      } else if (rawText.includes("nasi") || rawText.includes("mie") || rawText.includes("bubur") || rawText.includes("oatmeal") || rawText.includes("roti")) {
+        baseCal = 350; basePro = 8; baseCarb = 60; baseFat = 6;
+      } else if (rawText.includes("gorengan") || rawText.includes("fast food") || rawText.includes("burger") || rawText.includes("pizza") || rawText.includes("martabak")) {
+        baseCal = 480; basePro = 12; baseCarb = 45; baseFat = 26;
+      } else if (rawText.includes("susu") || rawText.includes("boba") || rawText.includes("kopi") || rawText.includes("es krim") || rawText.includes("manis")) {
+        baseCal = 250; basePro = 5; baseCarb = 35; baseFat = 9;
+      } else if (rawText.includes("sayur") || rawText.includes("salad") || rawText.includes("buah")) {
+        baseCal = 130; basePro = 4; baseCarb = 22; baseFat = 3;
+      }
+
+      document.getElementById("food-cal").value = Math.round(baseCal * multiplier);
+      document.getElementById("food-pro").value = Math.round(basePro * multiplier);
+      document.getElementById("food-carb").value = Math.round(baseCarb * multiplier);
+      document.getElementById("food-fat").value = Math.round(baseFat * multiplier);
+    }
+
+    // Event listener real-time untuk input teks bebas custom food
+    document.addEventListener("DOMContentLoaded", () => {
+      const customDescEl = document.getElementById("custom-food-desc");
+      if (customDescEl) {
+        customDescEl.addEventListener("input", triggerAutoEstimate);
+      }
+    });
+
     function filterFoodDatabase() {
       const keyword = document.getElementById("food-search-input").value.toLowerCase();
       const resultsContainer = document.getElementById("food-search-results");
@@ -735,7 +792,6 @@
       };
     });
 
-    // Handle klik tab menu (sinkron untuk sidebar desktop & bottom nav mobile)
     document.querySelectorAll(".nav-item").forEach(btn => {
       btn.onclick = () => {
         const targetTab = btn.dataset.tab;
@@ -779,7 +835,13 @@
     function openFoodModal() { 
       foodQueue = [];
       document.getElementById("food-search-input").value = "";
+      document.getElementById("custom-food-desc").value = "";
       document.getElementById("food-search-results").classList.add("hidden");
+      document.getElementById("food-name").value = "";
+      document.getElementById("food-cal").value = "";
+      document.getElementById("food-pro").value = "";
+      document.getElementById("food-carb").value = "";
+      document.getElementById("food-fat").value = "";
       renderFoodQueue();
       openModal("food-modal"); 
     }
