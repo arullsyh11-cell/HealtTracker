@@ -317,45 +317,48 @@
 
     <!-- 4. SCREEN: JADWAL & LATIHAN -->
     <section id="screen-workout" class="screen space-y-6">
-      <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 class="text-2xl font-extrabold text-slate-800">Jadwal & Tracking Latihan</h2>
-          <p class="text-sm text-slate-500">Pilih program latihan mingguan atau catat pembakaran kalori latihanmu.</p>
-        </div>
-        <div class="flex items-center gap-3">
-          
-          <!-- CUSTOM DROPDOWN BERBASIS DIV -->
-          <div class="relative min-w-[240px]">
-            <button type="button" onclick="toggleCustomDropdown()" id="custom-dropdown-btn" class="w-full bg-white border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-bold shadow-xs flex items-center justify-between text-slate-700 hover:border-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-600">
-              <span class="flex items-center gap-2.5 truncate">
-                <i data-lucide="dumbbell" class="w-4 h-4 text-emerald-700 shrink-0"></i>
-                <span id="selected-split-text" class="truncate">Push / Pull / Legs (PPL)</span>
-              </span>
-              <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200" id="dropdown-chevron"></i>
-            </button>
+      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div>
+      <h2 class="text-2xl font-extrabold text-slate-800">Jadwal & Tracking Latihan</h2>
+      <p class="text-sm text-slate-500">Pilih program latihan mingguan atau catat pembakaran kalori latihanmu.</p>
+    </div>
+    
+    <!-- Bagian kontrol (Dropdown & Tombol) -->
+    <div class="flex items-center gap-2.5 w-full sm:w-auto">
+      
+      <!-- CUSTOM DROPDOWN BERBASIS DIV -->
+      <div class="relative flex-1 sm:min-w-[220px]">
+        <button type="button" onclick="toggleCustomDropdown()" id="custom-dropdown-btn" class="w-full bg-white border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-bold shadow-xs flex items-center justify-between text-slate-700 hover:border-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          <span class="flex items-center gap-2 truncate">
+            <i data-lucide="dumbbell" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+            <span id="selected-split-text" class="truncate">Push / Pull / Legs (PPL)</span>
+          </span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200" id="dropdown-chevron"></i>
+        </button>
 
-            <!-- Menu Popup Kustom -->
-            <div id="custom-dropdown-menu" class="hidden absolute right-0 left-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-45 divide-y divide-slate-100">
-              <div onclick="selectWorkoutSplit('Push / Pull / Legs')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
-                <span>Push / Pull / Legs (PPL)</span>
-                <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Push / Pull / Legs"></i>
-              </div>
-              <div onclick="selectWorkoutSplit('Upper / Lower')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
-                <span>Upper / Lower Body</span>
-                <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Upper / Lower"></i>
-              </div>
-              <div onclick="selectWorkoutSplit('Full Body')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
-                <span>Full Body Workout</span>
-                <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Full Body"></i>
-              </div>
-            </div>
+        <!-- Menu Popup Kustom -->
+        <div id="custom-dropdown-menu" class="hidden absolute right-0 left-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-45 divide-y divide-slate-100">
+          <div onclick="selectWorkoutSplit('Push / Pull / Legs')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
+            <span>Push / Pull / Legs (PPL)</span>
+            <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Push / Pull / Legs"></i>
           </div>
-          
-          <button onclick="openWorkoutModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm shadow-md transition flex items-center gap-2 shrink-0">
-            <i data-lucide="plus" class="w-4 h-4"></i> Catat Workout
-          </button>
+          <div onclick="selectWorkoutSplit('Upper / Lower')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
+            <span>Upper / Lower Body</span>
+            <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Upper / Lower"></i>
+          </div>
+          <div onclick="selectWorkoutSplit('Full Body')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
+            <span>Full Body Workout</span>
+            <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Full Body"></i>
+          </div>
         </div>
-      </header>
+      </div>
+      
+      <!-- Tombol Catat Workout (Ukurannya menyesuaikan agar berdampingan di HP) -->
+      <button onclick="openWorkoutModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3.5 py-2.5 rounded-xl text-sm shadow-md transition flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap">
+        <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden xs:inline">Catat</span>Catat Workout
+      </button>
+    </div>
+</header>
 
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
