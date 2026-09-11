@@ -629,14 +629,69 @@
 
   <script>
     const DATABASE_MAKANAN = {
-      "Nasi Putih (1 piring/150g)": {"kalori": 204, "protein": 4.2, "karbo": 44.0, "lemak": 0.4},
-      "Oatmeal (40g dry)": {"kalori": 150, "protein": 5.0, "karbo": 27.0, "lemak": 2.5},
-      "Nasi Goreng (1 piring)": {"kalori": 510, "protein": 12.5, "karbo": 65.0, "lemak": 21.0},
-      "Roti Tawar Gandum (2 lembar)": {"kalori": 130, "protein": 5.0, "karbo": 24.0, "lemak": 1.5},
-      "Dada Ayam Bakar (100g)": {"kalori": 165, "protein": 31.0, "karbo": 0.0, "lemak": 3.6},
-      "Telur Rebus (1 butir)": {"kalori": 78, "protein": 6.3, "karbo": 0.6, "lemak": 5.3},
-      "Whey Protein Shake (1 scoop)": {"kalori": 120, "protein": 24.0, "karbo": 3.0, "lemak": 1.5}
-    };
+    // --- Makanan Pokok & Karbohidrat ---
+    "Nasi Putih (1 piring/150g)": {"kalori": 204, "protein": 4.2, "karbo": 44.0, "lemak": 0.4},
+    "Oatmeal (40g dry)": {"kalori": 150, "protein": 5.0, "karbo": 27.0, "lemak": 2.5},
+    "Nasi Goreng (1 piring)": {"kalori": 510, "protein": 12.5, "karbo": 65.0, "lemak": 21.0},
+    "Roti Tawar Gandum (2 lembar)": {"kalori": 130, "protein": 5.0, "karbo": 24.0, "lemak": 1.5},
+    "Indomie Goreng Standard (1 bungkus)": {"kalori": 380, "protein": 7.0, "karbo": 54.0, "lemak": 14.0},
+    "Indomie Goreng Jumbo (1 bungkus)": {"kalori": 530, "protein": 10.0, "karbo": 75.0, "lemak": 20.0},
+    "Indomie Rebus Rasa Ayam Bawang / Kari (1 bungkus)": {"kalori": 340, "protein": 6.5, "karbo": 48.0, "lemak": 13.0},
+
+    // --- Snack, Minuman & Dessert ---
+    "Dubai Chewy Cookies (1 pcs/70g)": {"kalori": 320, "protein": 4.5, "karbo": 38.0, "lemak": 17.0},
+    "Es Krim Vanilla / Cokelat (1 scoop/75g)": {"kalori": 150, "protein": 2.5, "karbo": 18.0, "lemak": 7.5},
+    "Kopi Hitam / Americano Unsweetened (1 gelas)": {"kalori": 5, "protein": 0.3, "karbo": 0.0, "lemak": 0.0},
+    "Milk Tea / Boba Drink (1 cup standard)": {"kalori": 350, "protein": 3.0, "karbo": 58.0, "lemak": 12.0},
+    "Yogurt Plain / Greek Yogurt (1 cup/125g)": {"kalori": 100, "protein": 7.0, "karbo": 8.0, "lemak": 4.0},
+    
+    // --- Olahan Ayam & Daging ---
+    "Ayam Goreng - Dada (1 pcs)": {"kalori": 220, "protein": 29.0, "karbo": 0.0, "lemak": 11.0},
+    "Ayam Goreng - Paha Atas / Thigh (1 pcs)": {"kalori": 210, "protein": 22.0, "karbo": 0.0, "lemak": 13.0},
+    "Ayam Goreng - Paha Bawah / Drumstick (1 pcs)": {"kalori": 160, "protein": 18.0, "karbo": 0.0, "lemak": 9.5},
+    "Ayam Goreng - Kepak / Sayap (1 pcs)": {"kalori": 140, "protein": 12.0, "karbo": 0.0, "lemak": 10.0},
+    "Ayam Goreng - Ati Ampela (1 pasang)": {"kalori": 120, "protein": 16.0, "karbo": 0.5, "lemak": 5.5},
+
+    "Fried Chicken - Dada (1 pcs)": {"kalori": 390, "protein": 34.0, "karbo": 11.0, "lemak": 23.0},
+    "Fried Chicken - Paha Upper (1 pcs)": {"kalori": 330, "protein": 24.0, "karbo": 9.0, "lemak": 22.0},
+    "Fried Chicken - Paha Bawah / Drumstick (1 pcs)": {"kalori": 220, "protein": 16.0, "karbo": 7.0, "lemak": 14.0},
+    "Fried Chicken - Sayap (1 pcs)": {"kalori": 210, "protein": 13.0, "karbo": 8.0, "lemak": 14.0},
+    "Ayam Geprek + Tepung (1 porsi)": {"kalori": 420, "protein": 28.0, "karbo": 15.0, "lemak": 27.0},
+    "Ayam Popcorn / Crispy Bites (100g)": {"kalori": 290, "protein": 18.0, "karbo": 16.0, "lemak": 17.0},
+    "Dada Ayam Bakar (100g)": {"kalori": 165, "protein": 31.0, "karbo": 0.0, "lemak": 3.6},
+    "Dada Ayam Rebus/Kukus (100g)": {"kalori": 130, "protein": 28.0, "karbo": 0.0, "lemak": 2.0},
+    "Sate Ayam + Bumbu Kacang (10 tusuk)": {"kalori": 420, "protein": 32.0, "karbo": 12.0, "lemak": 26.0},
+    "Sate Kambing + Bumbu Kecap (10 tusuk)": {"kalori": 490, "protein": 35.0, "karbo": 10.0, "lemak": 33.0},
+    "Dimsum Ayam (4 pcs)": {"kalori": 210, "protein": 14.0, "karbo": 18.0, "lemak": 9.0},
+    
+    // --- Protein Nabati, Telur & Pendamping ---
+    "Martabak Telur Daging Sapi (Standard 4 Telur - 1 Potong)": {"kalori": 190, "protein": 9.5, "karbo": 10.0, "lemak": 12.5},
+    "Martabak Telur Daging Sapi Pacenongan/Spesial (1 Potong Besar)": {"kalori": 260, "protein": 13.0, "karbo": 12.0, "lemak": 18.0},
+    "Telur Rebus (1 butir)": {"kalori": 78, "protein": 6.3, "karbo": 0.6, "lemak": 5.3},
+    "Telur Dadar (1 butir)": {"kalori": 110, "protein": 6.5, "karbo": 0.8, "lemak": 9.0},
+    "Tahu Goreng (1 potong)": {"kalori": 35, "protein": 2.0, "karbo": 1.5, "lemak": 2.5},
+    "Tempe Goreng (1 potong)": {"kalori": 50, "protein": 4.0, "karbo": 3.0, "lemak": 3.0},
+    "Whey Protein Shake (1 scoop)": {"kalori": 120, "protein": 24.0, "karbo": 3.0, "lemak": 1.5},
+
+    // --- Aneka Susu ---
+    "Susu Dancow FortiGro Full Cream (1 saset/27g)": {"kalori": 130, "protein": 6.0, "karbo": 12.0, "lemak": 7.0},
+    "Susu Dancow FortiGro Cokelat (1 saset/39g)": {"kalori": 160, "protein": 5.0, "karbo": 23.0, "lemak": 5.0},
+    "Susu Zee Swirtz Cokelat/Vanila (1 saset/40g)": {"kalori": 160, "protein": 5.0, "karbo": 24.0, "lemak": 4.5},
+    "Susu Milo Bubuk (1 saset/22g)": {"kalori": 90, "protein": 2.0, "karbo": 14.0, "lemak": 2.5},
+    "Susu UHT Full Cream / Ultra Milk (200ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
+    "Susu Indomilk UHT Cokelat (190ml)": {"kalori": 140, "protein": 5.0, "karbo": 21.0, "lemak": 4.0},
+    "Susu Bear Brand / Beruang (1 kaleng/189ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
+
+    // --- Jajanan Pasar & Dessert Tradisional/Modern ---
+    "Martabak Manis Cokelat Keju (1 potong)": {"kalori": 270, "protein": 5.0, "karbo": 34.0, "lemak": 13.0},
+    "Pisang Goreng (1 pcs)": {"kalori": 140, "protein": 1.2, "karbo": 22.0, "lemak": 5.5},
+    "Roti Bakar Cokelat Keju (1 porsi)": {"kalori": 380, "protein": 8.0, "karbo": 52.0, "lemak": 16.0},
+    "Kue Klepon (3 pcs)": {"kalori": 135, "protein": 1.5, "karbo": 26.0, "lemak": 3.0},
+    "Donat Cokelat Meses (1 pcs)": {"kalori": 240, "protein": 4.0, "karbo": 31.0, "lemak": 11.0},
+    "Es Cendol / Dawet (1 gelas)": {"kalori": 220, "protein": 2.0, "karbo": 38.0, "lemak": 7.0},
+    "Es Teler (1 mangkok)": {"kalori": 310, "protein": 3.5, "karbo": 48.0, "lemak": 12.0},
+    "Kopi Susu Gula Aren (1 gelas)": {"kalori": 180, "protein": 3.0, "karbo": 25.0, "lemak": 7.0}
+};
 
     const WORKOUT_PROGRAMS = {
       "Push / Pull / Legs": {
