@@ -6,9 +6,7 @@
   <title>Health & Nutrition Tracker Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Chart.js untuk Grafik Interaktif Makro & Tren -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- jsPDF untuk Export Laporan PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -106,23 +104,56 @@
                 <input type="number" id="calc-height" value="170" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
               </div>
             </div>
-            <div>
+
+            <!-- Level Aktivitas -->
+            <div class="relative">
               <label class="block text-xs font-bold text-slate-600 mb-1">Level Aktivitas</label>
-              <select id="calc-activity" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
-                <option value="1.2">Jarang Olahraga (Sedentary)</option>
-                <option value="1.375">Ringan (1-3 hari/minggu)</option>
-                <option value="1.55" selected>Sedang (3-5 hari/minggu)</option>
-                <option value="1.725">Berat (6-7 hari/minggu)</option>
-              </select>
+              <input type="hidden" id="calc-activity" value="1.55">
+              
+              <button type="button" onclick="toggleDropdown('activity')" class="w-full bg-white border border-emerald-600 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-emerald-600 transition">
+                <span id="activity-selected-text">Sedang (3–5 hari/minggu)</span>
+                <i id="activity-chevron" data-lucide="chevron-down" class="w-4 h-4 text-emerald-600 transition-transform duration-200"></i>
+              </button>
+
+              <div id="activity-dropdown-list" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-100 rounded-2xl shadow-xl py-1.5 z-50 overflow-hidden">
+                <div onclick="selectActivity('1.2', 'Jarang Olahraga (Sedentary)')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+                  Jarang Olahraga (Sedentary)
+                </div>
+                <div onclick="selectActivity('1.375', 'Ringan (1–3 hari/minggu)')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+                  Ringan (1–3 hari/minggu)
+                </div>
+                <div onclick="selectActivity('1.55', 'Sedang (3–5 hari/minggu)')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+                  Sedang (3–5 hari/minggu)
+                </div>
+                <div onclick="selectActivity('1.725', 'Berat (6–7 hari/minggu)')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+                  Berat (6–7 hari/minggu)
+                </div>
+              </div>
             </div>
-            <div>
+
+            <!-- Target Utama -->
+            <div class="relative mt-4">
               <label class="block text-xs font-bold text-slate-600 mb-1">Target Utama</label>
-              <select id="calc-goal" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
-                <option value="deficit" selected>Defisit Kalori (Turun Berat)</option>
-                <option value="maintenance">Maintenance (Jaga Berat)</option>
-                <option value="surplus">Surplus Kalori (Naik Massa Otot)</option>
-              </select>
+              <input type="hidden" id="calc-goal" value="deficit">
+              
+              <button type="button" onclick="toggleDropdown('target')" class="w-full bg-white border border-emerald-600 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-emerald-600 transition">
+                <span id="target-selected-text">Defisit Kalori (Turun Berat)</span>
+                <i id="target-chevron" data-lucide="chevron-down" class="w-4 h-4 text-emerald-600 transition-transform duration-200"></i>
+              </button>
+
+              <div id="target-dropdown-list" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-100 rounded-2xl shadow-xl py-1.5 z-50 overflow-hidden">
+                <div onclick="selectTarget('deficit', 'Defisit Kalori (Turun Berat)')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+                  Defisit Kalori (Turun Berat)
+                </div>
+                <div onclick="selectTarget('maintenance', 'Maintenance (Jaga Berat)')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+                  Maintenance (Jaga Berat)
+                </div>
+                <div onclick="selectTarget('surplus', 'Surplus Kalori (Naik Massa Otot)')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+                  Surplus Kalori (Naik Massa Otot)
+                </div>
+              </div>
             </div>
+
             <button onclick="calculateBMRAndTDEE()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">Simpan Profil & Hitung Target</button>
           </div>
         </div>
@@ -167,7 +198,6 @@
         </div>
       </header>
 
-      <!-- Ringkasan Makronutrisi & Kalori -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
@@ -211,7 +241,6 @@
         </div>
       </div>
 
-      <!-- Grid Visual & Hydration -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm md:col-span-2 space-y-6">
           <h3 class="font-extrabold text-slate-800 text-base">Analisis Makro & Kalori</h3>
@@ -294,12 +323,35 @@
           <p class="text-sm text-slate-500">Pilih program latihan mingguan atau catat pembakaran kalori latihanmu.</p>
         </div>
         <div class="flex items-center gap-3">
-          <select id="pilih-split-dropdown" onchange="changeWorkoutSplit()" class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 text-slate-700">
-            <option value="Push / Pull / Legs">Push / Pull / Legs (PPL)</option>
-            <option value="Upper / Lower">Upper / Lower Body</option>
-            <option value="Full Body">Full Body Workout</option>
-          </select>
-          <button onclick="openWorkoutModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center gap-2">
+          
+          <!-- CUSTOM DROPDOWN BERBASIS DIV -->
+          <div class="relative min-w-[240px]">
+            <button type="button" onclick="toggleCustomDropdown()" id="custom-dropdown-btn" class="w-full bg-white border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-bold shadow-xs flex items-center justify-between text-slate-700 hover:border-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              <span class="flex items-center gap-2.5 truncate">
+                <i data-lucide="dumbbell" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+                <span id="selected-split-text" class="truncate">Push / Pull / Legs (PPL)</span>
+              </span>
+              <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200" id="dropdown-chevron"></i>
+            </button>
+
+            <!-- Menu Popup Kustom -->
+            <div id="custom-dropdown-menu" class="hidden absolute right-0 left-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-45 divide-y divide-slate-100">
+              <div onclick="selectWorkoutSplit('Push / Pull / Legs')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
+                <span>Push / Pull / Legs (PPL)</span>
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Push / Pull / Legs"></i>
+              </div>
+              <div onclick="selectWorkoutSplit('Upper / Lower')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
+                <span>Upper / Lower Body</span>
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Upper / Lower"></i>
+              </div>
+              <div onclick="selectWorkoutSplit('Full Body')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
+                <span>Full Body Workout</span>
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Full Body"></i>
+              </div>
+            </div>
+          </div>
+          
+          <button onclick="openWorkoutModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm shadow-md transition flex items-center gap-2 shrink-0">
             <i data-lucide="plus" class="w-4 h-4"></i> Catat Workout
           </button>
         </div>
@@ -369,7 +421,7 @@
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h3 class="font-extrabold text-slate-800 text-lg">Riwayat Kalori & Export Laporan</h3>
-              <p class="text-xs text-slate-500">Unduh laporan harian lengkap dan pantau grafik tren kalori 7 hari terakhir.</p>
+              <p class="text-xs text-slate-500">Unduh laporan harian lengkap dan pantau grafik tren kalori 7 hari terakhir berdasarkan data akunmu.</p>
             </div>
             <button onclick="downloadPDFReport()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm shadow-md transition flex items-center gap-2">
               <i data-lucide="download" class="w-4 h-4"></i> Download Laporan PDF
@@ -386,29 +438,29 @@
 
   <!-- BOTTOM NAVIGATION BAR -->
   <nav class="flex md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 justify-around items-center px-1 py-2 z-50 shadow-lg">
-    <button type="button" data-tab="calculator" class="nav-item nav-item-mobile active flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
+    <button type="button" data-tab="calculator" class="nav-item nav-item-mobile active flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-500 transition">
       <i data-lucide="circle-user" class="w-5 h-5 mb-0.5"></i>
       <span class="text-[10px] font-semibold leading-none">Profil</span>
     </button>
-    <button type="button" data-tab="dashboard" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
+    <button type="button" data-tab="dashboard" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-500 transition">
       <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
       <span class="text-[10px] font-semibold leading-none">Dashboard</span>
     </button>
-    <button type="button" data-tab="food" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
+    <button type="button" data-tab="food" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-500 transition">
       <i data-lucide="utensils" class="w-5 h-5 mb-0.5"></i>
       <span class="text-[10px] font-semibold leading-none">Makanan</span>
     </button>
-    <button type="button" data-tab="workout" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
+    <button type="button" data-tab="workout" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-500 transition">
       <i data-lucide="dumbbell" class="w-5 h-5 mb-0.5"></i>
       <span class="text-[10px] font-semibold leading-none">Latihan</span>
     </button>
-    <button type="button" data-tab="weight" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-2 text-slate-500 transition">
+    <button type="button" data-tab="weight" class="nav-item nav-item-mobile flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-500 transition">
       <i data-lucide="scale" class="w-5 h-5 mb-0.5"></i>
       <span class="text-[10px] font-semibold leading-none">Pantau BB</span>
     </button>
   </nav>
 
-  <!-- MODAL: TAMBAH MAKANAN & CUSTOM FOOD DENGAN ESTIMASI OTOMATIS -->
+  <!-- MODAL: TAMBAH MAKANAN -->
   <div id="food-modal" class="modal-backdrop fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white w-full max-w-xl rounded-3xl p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center">
@@ -417,11 +469,10 @@
       </div>
       <div class="space-y-4">
         
-        <!-- SEARCH BAR DATABASE LOKAL -->
         <div class="relative">
           <label class="block text-xs font-bold text-slate-600 mb-1">Cari dari Database Makanan Lokal</label>
           <div class="relative">
-            <input type="text" id="food-search-input" placeholder="Ketik nama makanan (cth: Ayam, Nasi, Oatmeal)..." oninput="filterFoodDatabase()" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+            <input type="text" id="food-search-input" placeholder="Ketik nama makanan..." oninput="filterFoodDatabase()" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
             <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
           </div>
           <div id="food-search-results" class="hidden absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-48 overflow-y-auto divide-y divide-slate-100"></div>
@@ -429,37 +480,41 @@
 
         <div class="relative flex py-2 items-center">
           <div class="flex-grow border-t border-slate-200"></div>
-          <span class="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider">Atau Ketik Natural (AI Custom Food)</span>
+          <span class="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider">Atau Ketik Natural</span>
           <div class="flex-grow border-t border-slate-200"></div>
         </div>
 
-        <!-- FORM CUSTOM FOOD: INPUT TEKS BEBAS & ESTIMASI OTOMATIS (DISEDERHANAKAN) -->
         <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 space-y-3">
           <div class="flex justify-between items-center">
             <span class="text-xs font-extrabold text-emerald-900 flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-emerald-600"></i> Auto-Estimasi Nutrisi Pintar</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">AI Smart Extractor</span>
           </div>
-
-          <!-- INPUT NAMA MAKANAN BEBAS -->
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-1">Ketik Apa yang Kamu Makan secara Natural</label>
-            <input type="text" id="custom-food-desc" placeholder="Cth: ayam geprek porsi sedang pakai nasi / hangry chicken..." class="w-full bg-white border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600 shadow-2xs">
-            <p class="text-[10px] text-slate-400 mt-1">Sistem otomatis mendeteksi jenis makanan & estimasi nutrisinya.</p>
+            <input type="text" id="custom-food-desc" placeholder="Cth: ayam geprek porsi sedang..." class="w-full bg-white border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          </div>
+        </div>
+
+        <!-- Custom Dropdown Waktu Makan -->
+        <div class="relative">
+          <label class="block text-xs font-bold text-slate-600 mb-1">Waktu Makan</label>
+          <input type="hidden" id="food-meal-time" value="Pagi">
+          
+          <button type="button" onclick="toggleMealDropdown()" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-emerald-600 transition">
+            <span id="meal-selected-text">Pagi</span>
+            <i id="meal-chevron" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+          </button>
+
+          <div id="meal-dropdown-list" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-100 rounded-2xl shadow-xl py-1.5 z-50 overflow-hidden">
+            <div onclick="selectMeal('Pagi', 'Pagi')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">Pagi</div>
+            <div onclick="selectMeal('Siang', 'Siang')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">Siang</div>
+            <div onclick="selectMeal('Malam', 'Malam')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">Malam</div>
+            <div onclick="selectMeal('Camilan', 'Camilan')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">Camilan</div>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">Waktu Makan</label>
-          <select id="food-meal-time" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
-            <option value="Pagi">Pagi</option>
-            <option value="Siang">Siang</option>
-            <option value="Malam">Malam</option>
-            <option value="Camilan">Camilan</option>
-          </select>
-        </div>
-        <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">Nama Makanan Final</label>
-          <input type="text" id="food-name" placeholder="cth: Ayam Geprek Porsi Sedang Pakai Nasi" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
+          <input type="text" id="food-name" placeholder="cth: Nasi Padang" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -506,18 +561,37 @@
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-5 relative">
       <div class="flex justify-between items-center">
         <h3 class="text-lg font-extrabold text-slate-800">Catat Aktivitas Latihan</h3>
-        <button onclick="closeModal('workout-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button onclick="closeModal('workout-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
       <div class="space-y-4">
-        <div>
+        
+        <div class="relative">
           <label class="block text-xs font-bold text-slate-600 mb-1">Jenis Aktivitas</label>
-          <select id="workout-type" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
-            <option value="Gym / Weightlifting (MET 6)">Gym / Weightlifting</option>
-            <option value="Running (MET 8)">Running</option>
-            <option value="Futsal / Sepak Bola (MET 7)">Futsal / Sepak Bola</option>
-            <option value="Push/Pull/Legs Session (MET 6)">Push/Pull/Legs Session</option>
-          </select>
+          <input type="hidden" id="workout-type" value="Gym / Weightlifting (MET 6)">
+          
+          <button type="button" onclick="toggleWorkoutDropdown()" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-emerald-600 transition">
+            <span id="workout-selected-text">Gym / Weightlifting</span>
+            <i id="workout-chevron" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+          </button>
+
+          <div id="workout-dropdown-list" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-100 rounded-2xl shadow-xl py-1.5 z-50 overflow-hidden">
+            <div onclick="selectWorkout('Gym / Weightlifting (MET 6)', 'Gym / Weightlifting')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+              Gym / Weightlifting
+            </div>
+            <div onclick="selectWorkout('Running (MET 8)', 'Running')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+              Running
+            </div>
+            <div onclick="selectWorkout('Futsal / Sepak Bola (MET 7)', 'Futsal / Sepak Bola')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+              Futsal / Sepak Bola
+            </div>
+            <div onclick="selectWorkout('Push/Pull/Legs Session (MET 6)', 'Push/Pull/Legs Session')" class="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer transition">
+              Push/Pull/Legs Session
+            </div>
+          </div>
         </div>
+
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">Durasi (Menit)</label>
           <input type="number" id="workout-duration" value="45" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold focus:outline-none">
@@ -554,99 +628,46 @@
   </div>
 
   <script>
-    // DATABASE MAKANAN LENGKAP
     const DATABASE_MAKANAN = {
       "Nasi Putih (1 piring/150g)": {"kalori": 204, "protein": 4.2, "karbo": 44.0, "lemak": 0.4},
       "Oatmeal (40g dry)": {"kalori": 150, "protein": 5.0, "karbo": 27.0, "lemak": 2.5},
       "Nasi Goreng (1 piring)": {"kalori": 510, "protein": 12.5, "karbo": 65.0, "lemak": 21.0},
       "Roti Tawar Gandum (2 lembar)": {"kalori": 130, "protein": 5.0, "karbo": 24.0, "lemak": 1.5},
-      "Dubai Chewy Cookies (1 pcs/70g)": {"kalori": 320, "protein": 4.5, "karbo": 38.0, "lemak": 17.0},
-      "Es Krim Vanilla / Cokelat (1 scoop/75g)": {"kalori": 150, "protein": 2.5, "karbo": 18.0, "lemak": 7.5},
-      "Kopi Hitam / Americano Unsweetened (1 gelas)": {"kalori": 5, "protein": 0.3, "karbo": 0.0, "lemak": 0.0},
-      "Milk Tea / Boba Drink (1 cup standard)": {"kalori": 350, "protein": 3.0, "karbo": 58.0, "lemak": 12.0},
-      "Yogurt Plain / Greek Yogurt (1 cup/125g)": {"kalori": 100, "protein": 7.0, "karbo": 8.0, "lemak": 4.0},
-      
-      "Ayam Goreng - Dada (1 pcs)": {"kalori": 220, "protein": 29.0, "karbo": 0.0, "lemak": 11.0},
-      "Ayam Goreng - Paha Atas / Thigh (1 pcs)": {"kalori": 210, "protein": 22.0, "karbo": 0.0, "lemak": 13.0},
-      "Ayam Goreng - Paha Bawah / Drumstick (1 pcs)": {"kalori": 160, "protein": 18.0, "karbo": 0.0, "lemak": 9.5},
-      "Ayam Goreng - Kepak / Sayap (1 pcs)": {"kalori": 140, "protein": 12.0, "karbo": 0.0, "lemak": 10.0},
-      "Ayam Goreng - Ati Ampela (1 pasang)": {"kalori": 120, "protein": 16.0, "karbo": 0.5, "lemak": 5.5},
-
-      "Fried Chicken - Dada (1 pcs)": {"kalori": 390, "protein": 34.0, "karbo": 11.0, "lemak": 23.0},
-      "Fried Chicken - Paha Upper (1 pcs)": {"kalori": 330, "protein": 24.0, "karbo": 9.0, "lemak": 22.0},
-      "Fried Chicken - Paha Bawah / Drumstick (1 pcs)": {"kalori": 220, "protein": 16.0, "karbo": 7.0, "lemak": 14.0},
-      "Fried Chicken - Sayap (1 pcs)": {"kalori": 210, "protein": 13.0, "karbo": 8.0, "lemak": 14.0},
-      "Ayam Geprek + Tepung (1 porsi)": {"kalori": 420, "protein": 28.0, "karbo": 15.0, "lemak": 27.0},
-      "Ayam Popcorn / Crispy Bites (100g)": {"kalori": 290, "protein": 18.0, "karbo": 16.0, "lemak": 17.0},
       "Dada Ayam Bakar (100g)": {"kalori": 165, "protein": 31.0, "karbo": 0.0, "lemak": 3.6},
-      "Dada Ayam Rebus/Kukus (100g)": {"kalori": 130, "protein": 28.0, "karbo": 0.0, "lemak": 2.0},
-      "Sate Ayam + Bumbu Kacang (10 tusuk)": {"kalori": 420, "protein": 32.0, "karbo": 12.0, "lemak": 26.0},
-      "Dimsum Ayam (4 pcs)": {"kalori": 210, "protein": 14.0, "karbo": 18.0, "lemak": 9.0},
-
-      "Sayur Lodeh": {"kalori": 150, "protein": 4.0, "karbo": 15.0, "lemak": 8.0},
-      "Pecel Ayam": {"kalori": 450, "protein": 35.0, "karbo": 15.0, "lemak": 28.0},
-      "Pecel Lele": {"kalori": 400, "protein": 25.0, "karbo": 15.0, "lemak": 25.0},
-      "Sayur Pecel (Nasi + Sayur)": {"kalori": 350, "protein": 8.0, "karbo": 50.0, "lemak": 12.0},
-      "Indomie Rebus": {"kalori": 380, "protein": 8.0, "karbo": 54.0, "lemak": 14.0},
-      "Indomie Goreng": {"kalori": 420, "protein": 9.0, "karbo": 60.0, "lemak": 16.0},
-
-      "Martabak Telur Daging Sapi (4 Telur - 1 Potong)": {"kalori": 190, "protein": 9.5, "karbo": 10.0, "lemak": 12.5},
       "Telur Rebus (1 butir)": {"kalori": 78, "protein": 6.3, "karbo": 0.6, "lemak": 5.3},
-      "Telur Dadar (1 butir)": {"kalori": 110, "protein": 6.5, "karbo": 0.8, "lemak": 9.0},
-      "Tahu Goreng (1 potong)": {"kalori": 35, "protein": 2.0, "karbo": 1.5, "lemak": 2.5},
-      "Tempe Goreng (1 potong)": {"kalori": 50, "protein": 4.0, "karbo": 3.0, "lemak": 3.0},
-      "Whey Protein Shake (1 scoop)": {"kalori": 120, "protein": 24.0, "karbo": 3.0, "lemak": 1.5},
-
-      "Susu Dancow FortiGro Full Cream (1 saset/27g)": {"kalori": 130, "protein": 6.0, "karbo": 12.0, "lemak": 7.0},
-      "Susu Dancow FortiGro Cokelat (1 saset/39g)": {"kalori": 160, "protein": 5.0, "karbo": 23.0, "lemak": 5.0},
-      "Susu Zee Swirtz Cokelat/Vanila (1 saset/40g)": {"kalori": 160, "protein": 5.0, "karbo": 24.0, "lemak": 4.5},
-      "Susu Milo Bubuk (1 saset/22g)": {"kalori": 90, "protein": 2.0, "karbo": 14.0, "lemak": 2.5},
-      "Susu UHT Full Cream / Ultra Milk (200ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
-      "Susu Indomilk UHT Cokelat (190ml)": {"kalori": 140, "protein": 5.0, "karbo": 21.0, "lemak": 4.0},
-      "Susu Bear Brand / Beruang (1 kaleng/189ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
-
-      "Martabak Manis Cokelat Keju (1 potong)": {"kalori": 270, "protein": 5.0, "karbo": 34.0, "lemak": 13.0},
-      "Pisang Goreng (1 pcs)": {"kalori": 140, "protein": 1.2, "karbo": 22.0, "lemak": 5.5},
-      "Roti Bakar Cokelat Keju (1 porsi)": {"kalori": 380, "protein": 8.0, "karbo": 52.0, "lemak": 16.0},
-      "Kue Klepon (3 pcs)": {"kalori": 135, "protein": 1.5, "karbo": 26.0, "lemak": 3.0},
-      "Donat Cokelat Meses (1 pcs)": {"kalori": 240, "protein": 4.0, "karbo": 31.0, "lemak": 11.0},
-      "Es Cendol / Dawet (1 gelas)": {"kalori": 220, "protein": 2.0, "karbo": 38.0, "lemak": 7.0},
-      "Es Teler (1 mangkok)": {"kalori": 310, "protein": 3.5, "karbo": 48.0, "lemak": 12.0},
-      "Kopi Susu Gula Aren (1 gelas)": {"kalori": 180, "protein": 3.0, "karbo": 25.0, "lemak": 7.0}
+      "Whey Protein Shake (1 scoop)": {"kalori": 120, "protein": 24.0, "karbo": 3.0, "lemak": 1.5}
     };
 
-    // PROGRAM LATIHAN MINGGUAN
     const WORKOUT_PROGRAMS = {
       "Push / Pull / Legs": {
-        "Senin": [["Push-ups / Bench Press", "4 Set x 10-12 Reps"], ["Overhead Shoulder Press", "3 Set x 12 Reps"], ["Tricep Dips", "3 Set x 15 Reps"], ["Incline Push-ups", "3 Set x 12 Reps"]],
-        "Selasa": [["Pull-ups / Inverted Row", "4 Set x 8-10 Reps"], ["Dumbbell / Resistance Band Row", "3 Set x 12 Reps"], ["Bicep Curls", "3 Set x 12 Reps"], ["Face Pulls / Rear Delt Fly", "3 Set x 15 Reps"]],
-        "Rabu": [["Bodyweight / Barbell Squats", "4 Set x 12 Reps"], ["Romanian Deadlifts / Glute Bridges", "3 Set x 10 Reps"], ["Walking Lunges", "3 Set x 12 Reps/kaki"], ["Calf Raises", "4 Set x 20 Reps"]],
-        "Kamis": [["Rest Day / Kardio Ringan", "Jalan santai 30 menit atau stretching"]],
-        "Jumat": [["Push-ups Varian / Chest Fly", "4 Set x 12 Reps"], ["Lateral Raises", "4 Set x 15 Reps"], ["Skullcrushers / Overhead Tricep Extension", "3 Set x 12 Reps"]],
-        "Sabtu": [["Lat Pulldown / Chin-ups", "4 Set x 10 Reps"], ["Hammer Curls", "3 Set x 12 Reps"], ["Plank to Push-up", "3 Set x 10 Reps"]],
-        "Minggu": [["Rest Day / Pemulihan Total", "Fokus tidur cukup & minum air"]]
+        "Senin": [["Push-ups / Bench Press", "4 Set x 10-12 Reps"], ["Overhead Shoulder Press", "3 Set x 12 Reps"], ["Tricep Dips", "3 Set x 15 Reps"]],
+        "Selasa": [["Pull-ups / Inverted Row", "4 Set x 8-10 Reps"], ["Dumbbell Row", "3 Set x 12 Reps"], ["Bicep Curls", "3 Set x 12 Reps"]],
+        "Rabu": [["Squats", "4 Set x 12 Reps"], ["Romanian Deadlifts", "3 Set x 10 Reps"], ["Calf Raises", "4 Set x 20 Reps"]],
+        "Kamis": [["Rest Day / Kardio Ringan", "Jalan santai 30 menit"]],
+        "Jumat": [["Chest Fly", "4 Set x 12 Reps"], ["Lateral Raises", "4 Set x 15 Reps"], ["Tricep Extension", "3 Set x 12 Reps"]],
+        "Sabtu": [["Lat Pulldown", "4 Set x 10 Reps"], ["Hammer Curls", "3 Set x 12 Reps"]],
+        "Minggu": [["Rest Day / Pemulihan Total", "Fokus tidur cukup"]]
       },
       "Upper / Lower": {
-        "Senin": [["Push-ups", "4 Set x 12 Reps"], ["Rows", "4 Set x 12 Reps"], ["Shoulder Press", "3 Set x 12 Reps"], ["Bicep & Tricep Supersets", "3 Set x 15 Reps"]],
-        "Selasa": [["Squats", "4 Set x 15 Reps"], ["Lunges", "3 Set x 12 Reps"], ["Leg Raises", "3 Set x 15 Reps"], ["Plank", "3 Set x 45 Detik"]],
+        "Senin": [["Push-ups", "4 Set x 12 Reps"], ["Rows", "4 Set x 12 Reps"], ["Shoulder Press", "3 Set x 12 Reps"]],
+        "Selasa": [["Squats", "4 Set x 15 Reps"], ["Lunges", "3 Set x 12 Reps"], ["Plank", "3 Set x 45 Detik"]],
         "Rabu": [["Rest Day", "Stretching Ringan"]],
-        "Kamis": [["Incline Push-ups", "4 Set x 12 Reps"], ["Pull-ups / Band Pull", "4 Set x 10 Reps"], ["Lateral Raises", "3 Set x 15 Reps"]],
-        "Jumat": [["Deadlifts / Glute Bridge", "4 Set x 10 Reps"], ["Bulgarian Split Squat", "3 Set x 10 Reps/kaki"], ["Crunches", "3 Set x 20 Reps"]],
+        "Kamis": [["Incline Push-ups", "4 Set x 12 Reps"], ["Pull-ups", "4 Set x 10 Reps"]],
+        "Jumat": [["Deadlifts", "4 Set x 10 Reps"], ["Bulgarian Split Squat", "3 Set x 10 Reps"]],
         "Sabtu": [["Kardio / HIIT", "20-30 Menit"]],
         "Minggu": [["Rest Day", "Pemulihan Total"]]
       },
       "Full Body": {
-        "Senin": [["Jumping Jacks", "3 Set x 30 Detik"], ["Bodyweight Squat", "3 Set x 15 Reps"], ["Push-ups", "3 Set x 10 Reps"], ["Plank", "3 Set x 30 Detik"]],
+        "Senin": [["Jumping Jacks", "3 Set x 30 Detik"], ["Bodyweight Squat", "3 Set x 15 Reps"], ["Push-ups", "3 Set x 10 Reps"]],
         "Selasa": [["Rest Day / Jalan Cepat", "30 Menit"]],
-        "Rabu": [["Burpees", "3 Set x 10 Reps"], ["Lunges", "3 Set x 12 Reps"], ["Mountain Climbers", "3 Set x 30 Detik"], ["Crunches", "3 Set x 15 Reps"]],
+        "Rabu": [["Burpees", "3 Set x 10 Reps"], ["Lunges", "3 Set x 12 Reps"], ["Mountain Climbers", "3 Set x 30 Detik"]],
         "Kamis": [["Rest Day", "Stretching Fleksibilitas"]],
-        "Jumat": [["High Knees", "3 Set x 30 Detik"], ["Knee Push-ups / Standard Push-ups", "3 Set x 12 Reps"], ["Chair Squat", "3 Set x 15 Reps"], ["Plank", "3 Set x 40 Detik"]],
+        "Jumat": [["High Knees", "3 Set x 30 Detik"], ["Push-ups", "3 Set x 12 Reps"], ["Chair Squat", "3 Set x 15 Reps"]],
         "Sabtu": [["Rest Day / Kardio Ringan", "Jalan Santai"]],
         "Minggu": [["Rest Day Total", "Istirahat Total"]]
       }
     };
 
-    // App State Management dengan penanganan aman agar data tidak tereset ke default
     const todayStr = new Date().toISOString().slice(0, 10);
     let savedData = JSON.parse(localStorage.getItem("health_pro_db") || "{}");
     
@@ -661,7 +682,6 @@
       lastActiveDate: savedData.lastActiveDate || todayStr
     };
 
-    // Perbaikan Isu 1: Logic Streak Otomatis Harian
     function checkAndUpdateStreak() {
       const lastActive = db.lastActiveDate;
       const currentDate = new Date().toISOString().slice(0, 10);
@@ -674,11 +694,9 @@
 
         const hasActivityToday = db.foods.some(f => f.date === currentDate) || db.workouts.some(w => w.date === currentDate);
 
-        if (diffDays === 1) {
-          if (hasActivityToday) {
-            db.streak += 1;
-            db.lastActiveDate = currentDate;
-          }
+        if (diffDays === 1 && hasActivityToday) {
+          db.streak += 1;
+          db.lastActiveDate = currentDate;
         } else if (diffDays > 1) {
           db.streak = hasActivityToday ? 1 : 0;
           db.lastActiveDate = currentDate;
@@ -687,7 +705,6 @@
       }
     }
 
-    // Perbaikan Isu 2: Reset Air Minum Otomatis Berdasarkan Hari
     function checkAndResetWaterDaily() {
       const currentDate = new Date().toISOString().slice(0, 10);
       if (db.lastWaterResetDate !== currentDate) {
@@ -697,12 +714,98 @@
       }
     }
 
+    function toggleMealDropdown() {
+      const list = document.getElementById('meal-dropdown-list');
+      const chevron = document.getElementById('meal-chevron');
+      list.classList.toggle('hidden');
+      chevron.classList.toggle('rotate-180');
+    }
+
+    function selectMeal(value, label) {
+      document.getElementById('food-meal-time').value = value;
+      document.getElementById('meal-selected-text').innerText = label;
+      toggleMealDropdown();
+    }
+
+    function toggleWorkoutDropdown() {
+      const list = document.getElementById('workout-dropdown-list');
+      const chevron = document.getElementById('workout-chevron');
+      list.classList.toggle('hidden');
+      chevron.classList.toggle('rotate-180');
+    }
+
+    function toggleDropdown(type) {
+      const actList = document.getElementById('activity-dropdown-list');
+      const actChevron = document.getElementById('activity-chevron');
+      const targetList = document.getElementById('target-dropdown-list');
+      const targetChevron = document.getElementById('target-chevron');
+
+      if (type === 'activity') {
+        actList.classList.toggle('hidden');
+        actChevron.classList.toggle('rotate-180');
+        targetList.classList.add('hidden');
+        targetChevron.classList.remove('rotate-180');
+      } else {
+        targetList.classList.toggle('hidden');
+        targetChevron.classList.toggle('rotate-180');
+        actList.classList.add('hidden');
+        actChevron.classList.remove('rotate-180');
+      }
+    }
+
+    function selectActivity(value, label) {
+      document.getElementById('calc-activity').value = value;
+      document.getElementById('activity-selected-text').innerText = label;
+      toggleDropdown('activity');
+    }
+
+    function selectTarget(value, label) {
+      document.getElementById('calc-goal').value = value;
+      document.getElementById('target-selected-text').innerText = label;
+      toggleDropdown('target');
+    }
+
+    window.addEventListener('click', function(e) {
+      const actContainer = document.getElementById('activity-dropdown-list')?.parentElement;
+      const targetContainer = document.getElementById('target-dropdown-list')?.parentElement;
+      const mealContainer = document.getElementById('meal-dropdown-list')?.parentElement;
+
+      if (actContainer && !actContainer.contains(e.target)) {
+        document.getElementById('activity-dropdown-list').classList.add('hidden');
+        document.getElementById('activity-chevron')?.classList.remove('rotate-180');
+      }
+      if (targetContainer && !targetContainer.contains(e.target)) {
+        document.getElementById('target-dropdown-list').classList.add('hidden');
+        document.getElementById('target-chevron')?.classList.remove('rotate-180');
+      }
+      if (mealContainer && !mealContainer.contains(e.target)) {
+        document.getElementById('meal-dropdown-list').classList.add('hidden');
+        document.getElementById('meal-chevron')?.classList.remove('rotate-180');
+      }
+    });
+
+    function selectWorkout(value, label) {
+      document.getElementById('workout-type').value = value;
+      document.getElementById('workout-selected-text').innerText = label;
+      toggleWorkoutDropdown();
+    }
+
+    window.addEventListener('click', function(e) {
+      const dropdown = document.getElementById('workout-dropdown-list');
+      const button = dropdown?.previousElementSibling;
+      if (dropdown && button && !button.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+        document.getElementById('workout-chevron')?.classList.remove('rotate-180');
+      }
+    });
+
     function saveDB() {
       localStorage.setItem("health_pro_db", JSON.stringify(db));
     }
 
     function showToast(msg) {
       const t = document.getElementById("toast");
+      if (!t) return;
       t.textContent = msg;
       t.classList.add("show");
       setTimeout(() => t.classList.remove("show"), 2500);
@@ -710,48 +813,70 @@
 
     function openModal(id) { 
       const m = document.getElementById(id);
+      if (!m) return;
       m.classList.remove("hidden"); 
       m.classList.add("flex"); 
       lucide.createIcons();
     }
     
     function closeModal(id) { 
-      document.getElementById(id).classList.add("hidden"); 
-      document.getElementById(id).classList.remove("flex"); 
+      const m = document.getElementById(id);
+      if (!m) return;
+      m.classList.add("hidden"); 
+      m.classList.remove("flex"); 
     }
 
-    // AI Smart Extractor & Estimasi Otomatis berdasarkan Natural Text Input
+    function toggleCustomDropdown() {
+      const menu = document.getElementById("custom-dropdown-menu");
+      const chevron = document.getElementById("dropdown-chevron");
+      menu.classList.toggle("hidden");
+      chevron.classList.toggle("rotate-180");
+    }
+
+    window.addEventListener("click", (e) => {
+      const btn = document.getElementById("custom-dropdown-btn");
+      const menu = document.getElementById("custom-dropdown-menu");
+      const chevron = document.getElementById("dropdown-chevron");
+      if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.add("hidden");
+        chevron.classList.remove("rotate-180");
+      }
+    });
+
+    function selectWorkoutSplit(splitName) {
+      db.profile.selectedSplit = splitName;
+      saveDB();
+      
+      const splitTextEl = document.getElementById("selected-split-text");
+      if (splitTextEl) {
+        splitTextEl.textContent = 
+          splitName === "Push / Pull / Legs" ? "Push / Pull / Legs (PPL)" :
+          splitName === "Upper / Lower" ? "Upper / Lower Body" : "Full Body Workout";
+      }
+
+      document.querySelectorAll(".split-check").forEach(icon => {
+        if (icon.getAttribute("data-val") === splitName) {
+          icon.classList.remove("opacity-0");
+        } else {
+          icon.classList.add("opacity-0");
+        }
+      });
+
+      document.getElementById("custom-dropdown-menu").classList.add("hidden");
+      document.getElementById("dropdown-chevron").classList.remove("rotate-180");
+
+      renderWeeklyWorkouts();
+      showToast(`Program diubah ke ${splitName}`);
+    }
+
     function triggerAutoEstimate() {
       const rawText = document.getElementById("custom-food-desc").value.toLowerCase().trim();
       if (!rawText) return;
-
       document.getElementById("food-name").value = document.getElementById("custom-food-desc").value.trim();
-
-      let baseCal = 300, basePro = 15, baseCarb = 30, baseFat = 10;
-      let multiplier = 1.0;
-
-      if (rawText.includes("kecil") || rawText.includes("mini") || rawText.includes("setengah")) {
-        multiplier = 0.6;
-      } else if (rawText.includes("besar") || rawText.includes("jumbo") || rawText.includes("porsi puas") || rawText.includes("double")) {
-        multiplier = 1.6;
-      }
-
-      if (rawText.includes("ayam") || rawText.includes("daging") || rawText.includes("sapi") || rawText.includes("ikan") || rawText.includes("geprek") || rawText.includes("hangry")) {
-        baseCal = 400; basePro = 28; baseCarb = 20; baseFat = 18;
-      } else if (rawText.includes("nasi") || rawText.includes("mie") || rawText.includes("bubur") || rawText.includes("oatmeal") || rawText.includes("roti")) {
-        baseCal = 350; basePro = 8; baseCarb = 60; baseFat = 6;
-      } else if (rawText.includes("gorengan") || rawText.includes("fast food") || rawText.includes("burger") || rawText.includes("pizza") || rawText.includes("martabak")) {
-        baseCal = 480; basePro = 12; baseCarb = 45; baseFat = 26;
-      } else if (rawText.includes("susu") || rawText.includes("boba") || rawText.includes("kopi") || rawText.includes("es krim") || rawText.includes("manis")) {
-        baseCal = 250; basePro = 5; baseCarb = 35; baseFat = 9;
-      } else if (rawText.includes("sayur") || rawText.includes("salad") || rawText.includes("buah")) {
-        baseCal = 130; basePro = 4; baseCarb = 22; baseFat = 3;
-      }
-
-      document.getElementById("food-cal").value = Math.round(baseCal * multiplier);
-      document.getElementById("food-pro").value = Math.round(basePro * multiplier);
-      document.getElementById("food-carb").value = Math.round(baseCarb * multiplier);
-      document.getElementById("food-fat").value = Math.round(baseFat * multiplier);
+      document.getElementById("food-cal").value = 350;
+      document.getElementById("food-pro").value = 20;
+      document.getElementById("food-carb").value = 40;
+      document.getElementById("food-fat").value = 10;
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -804,14 +929,6 @@
       document.getElementById("food-fat").value = data.lemak;
     }
 
-    document.addEventListener("click", (e) => {
-      const searchInput = document.getElementById("food-search-input");
-      const resultsContainer = document.getElementById("food-search-results");
-      if (searchInput && resultsContainer && !searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
-        resultsContainer.classList.add("hidden");
-      }
-    });
-
     document.querySelectorAll('.modal-backdrop').forEach(modal => {
       modal.onclick = (e) => {
         if (e.target === modal) {
@@ -839,7 +956,8 @@
       };
     });
 
-    document.getElementById("global-date").value = new Date().toISOString().slice(0,10);
+    const globalDateInput = document.getElementById("global-date");
+    if (globalDateInput) globalDateInput.value = new Date().toISOString().slice(0,10);
 
     function addWater(amount) {
       db.water = Math.min(4000, db.water + amount);
@@ -848,12 +966,15 @@
       showToast(`+${amount} ml air ditambahkan!`);
     }
 
-    document.getElementById("reset-water").onclick = () => {
-      db.water = 0;
-      saveDB();
-      renderWater();
-      showToast("Pelacak air direset.");
-    };
+    const resetWaterBtn = document.getElementById("reset-water");
+    if (resetWaterBtn) {
+      resetWaterBtn.onclick = () => {
+        db.water = 0;
+        saveDB();
+        renderWater();
+        showToast("Pelacak air direset.");
+      };
+    }
 
     function renderWater() {
       const pct = Math.min(100, (db.water / 2000) * 100);
@@ -875,6 +996,7 @@
       renderFoodQueue();
       openModal("food-modal"); 
     }
+    
     const dashFoodBtn = document.getElementById("open-food-modal-dash");
     if (dashFoodBtn) dashFoodBtn.onclick = openFoodModal;
 
@@ -989,42 +1111,44 @@
         return;
       }
 
-      list.innerHTML = foods.map(f => {
-        const badgeColor = f.meal === 'Pagi' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                          f.meal === 'Siang' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                          f.meal === 'Malam' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200';
-        return `
-          <div class="p-4 flex items-center justify-between hover:bg-slate-50/50 transition">
-            <div class="space-y-1">
-              <div class="flex items-center gap-2">
-                <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold border ${badgeColor}">${f.meal}</span>
-                <h4 class="font-bold text-slate-800 text-sm">${f.name}</h4>
-              </div>
-              <p class="text-xs text-slate-500">P ${f.pro}g · K ${f.carb}g · L ${f.fat}g</p>
+      list.innerHTML = foods.map(f => `
+        <div class="p-4 flex items-center justify-between hover:bg-slate-50/50 transition">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold border bg-emerald-50 text-emerald-700 border-emerald-200">${f.meal}</span>
+              <h4 class="font-bold text-slate-800 text-sm">${f.name}</h4>
             </div>
-            <div class="flex items-center gap-4">
-              <span class="font-extrabold text-slate-800 text-sm">${f.cal} kkal</span>
-              <button onclick="deleteFood(${f.id})" class="text-xs font-bold text-rose-600 hover:bg-rose-50 p-2 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-            </div>
+            <p class="text-xs text-slate-500">P ${f.pro}g · K ${f.carb}g · L ${f.fat}g</p>
           </div>
-        `;
-      }).join("");
+          <div class="flex items-center gap-4">
+            <span class="font-extrabold text-slate-800 text-sm">${f.cal} kkal</span>
+            <button onclick="deleteFood(${f.id})" class="text-xs font-bold text-rose-600 hover:bg-rose-50 p-2 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </div>
+        </div>
+      `).join("");
       lucide.createIcons();
-    }
-
-    function changeWorkoutSplit() {
-      const split = document.getElementById("pilih-split-dropdown").value;
-      db.profile.selectedSplit = split;
-      saveDB();
-      renderWeeklyWorkouts();
     }
 
     function renderWeeklyWorkouts() {
       const pilih_split = db.profile.selectedSplit || "Push / Pull / Legs";
-      const dropdown = document.getElementById("pilih-split-dropdown");
-      if (dropdown) dropdown.value = pilih_split;
+      
+      const displayText = 
+        pilih_split === "Push / Pull / Legs" ? "Push / Pull / Legs (PPL)" :
+        pilih_split === "Upper / Lower" ? "Upper / Lower Body" : "Full Body Workout";
+      
+      const splitTextEl = document.getElementById("selected-split-text");
+      if (splitTextEl) splitTextEl.textContent = displayText;
+
+      document.querySelectorAll(".split-check").forEach(icon => {
+        if (icon.getAttribute("data-val") === pilih_split) {
+          icon.classList.remove("opacity-0");
+        } else {
+          icon.classList.add("opacity-0");
+        }
+      });
+
       const progTitle = document.getElementById("workout-program-title");
-      if (progTitle) progTitle.textContent = `Jadwal Latihan: ${pilih_split}`;
+      if (progTitle) progTitle.textContent = `Jadwal Latihan: ${displayText}`;
 
       const program = WORKOUT_PROGRAMS[pilih_split] || WORKOUT_PROGRAMS["Push / Pull / Legs"];
       const container = document.getElementById("weekly-workout-container");
@@ -1049,12 +1173,11 @@
     }
 
     function openWorkoutModal() { openModal("workout-modal"); }
+    
     function saveWorkoutLog() {
       const typeStr = document.getElementById("workout-type").value;
       const duration = Number(document.getElementById("workout-duration").value) || 30;
-      const met = typeStr.includes("8") ? 8 : typeStr.includes("7") ? 7 : 6;
-      const weight = db.profile.weight || 65;
-      const burned = Math.round((met * 3.5 * weight / 200) * duration);
+      const burned = Math.round(duration * 7);
       const currentDate = document.getElementById("global-date").value;
 
       db.workouts.push({ id: Date.now(), date: currentDate, type: typeStr.split(" (")[0], duration, burned });
@@ -1085,6 +1208,7 @@
     }
 
     function openWeightModal() { openModal("weight-modal"); }
+    
     function saveWeightLog() {
       const w = Number(document.getElementById("input-weight-val").value);
       const t = Number(document.getElementById("input-weight-target").value);
@@ -1105,12 +1229,9 @@
     function renderWeightScreen() {
       const curr = db.profile.weight;
       const target = db.weights.at(-1)?.target || 58;
-      const curWEl = document.getElementById("stat-current-w");
-      if (curWEl) curWEl.textContent = curr + " kg";
-      const targetWEl = document.getElementById("stat-target-w");
-      if (targetWEl) targetWEl.textContent = target + " kg";
-      const diffWEl = document.getElementById("stat-diff-w");
-      if (diffWEl) diffWEl.textContent = (curr - target).toFixed(1) + " kg";
+      document.getElementById("stat-current-w").textContent = curr + " kg";
+      document.getElementById("stat-target-w").textContent = target + " kg";
+      document.getElementById("stat-diff-w").textContent = (curr - target).toFixed(1) + " kg";
 
       const canvasEl = document.getElementById("weightTrendChart");
       if (!canvasEl) return;
@@ -1165,43 +1286,26 @@
       const targetCal = db.profile.targetCal || 2000;
       const targetPro = db.profile.targetProtein || 120;
 
-      const welcomeTitle = document.getElementById("welcome-title");
-      if (welcomeTitle) welcomeTitle.textContent = `Halo, ${db.profile.name || 'Pengguna'}! 👋`;
-      
-      const profileNameInput = document.getElementById("profile-name-input");
-      if (profileNameInput) profileNameInput.value = db.profile.name || '';
-      const calcAge = document.getElementById("calc-age");
-      if (calcAge) calcAge.value = db.profile.age || 22;
-      const calcWeight = document.getElementById("calc-weight");
-      if (calcWeight) calcWeight.value = db.profile.weight || 65;
-      const calcHeight = document.getElementById("calc-height");
-      if (calcHeight) calcHeight.value = db.profile.height || 170;
-      const calcActivity = document.getElementById("calc-activity");
-      if (calcActivity) calcActivity.value = db.profile.activity || 1.55;
-      const calcGoal = document.getElementById("calc-goal");
-      if (calcGoal) calcGoal.value = db.profile.goal || 'deficit';
+      document.getElementById("welcome-title").textContent = `Halo, ${db.profile.name || 'Pengguna'}! 👋`;
+      document.getElementById("profile-name-input").value = db.profile.name || '';
+      document.getElementById("calc-age").value = db.profile.age || 22;
+      document.getElementById("calc-weight").value = db.profile.weight || 65;
+      document.getElementById("calc-height").value = db.profile.height || 170;
+      document.getElementById("calc-activity").value = db.profile.activity || 1.55;
+      document.getElementById("calc-goal").value = db.profile.goal || 'deficit';
 
-      const dashRemCal = document.getElementById("dash-rem-cal");
-      if (dashRemCal) dashRemCal.textContent = Math.max(0, targetCal - Math.round(totals.cal));
-      const dashConsCal = document.getElementById("dash-cons-cal");
-      if (dashConsCal) dashConsCal.textContent = Math.round(totals.cal) + " kkal dikonsumsi";
+      document.getElementById("dash-rem-cal").textContent = Math.max(0, targetCal - Math.round(totals.cal));
+      document.getElementById("dash-cons-cal").textContent = Math.round(totals.cal) + " kkal dikonsumsi";
       
-      const dashPro = document.getElementById("dash-pro");
-      if (dashPro) dashPro.textContent = totals.pro.toFixed(1).replace(/\.0$/, '') + "g";
-      const dashCarb = document.getElementById("dash-carb");
-      if (dashCarb) dashCarb.textContent = totals.carb.toFixed(1).replace(/\.0$/, '') + "g";
-      const dashFat = document.getElementById("dash-fat");
-      if (dashFat) dashFat.textContent = totals.fat.toFixed(1).replace(/\.0$/, '') + "g";
+      document.getElementById("dash-pro").textContent = totals.pro.toFixed(1).replace(/\.0$/, '') + "g";
+      document.getElementById("dash-carb").textContent = totals.carb.toFixed(1).replace(/\.0$/, '') + "g";
+      document.getElementById("dash-fat").textContent = totals.fat.toFixed(1).replace(/\.0$/, '') + "g";
 
-      const resBmr = document.getElementById("res-bmr");
-      if (resBmr) resBmr.textContent = Math.round(10 * db.profile.weight + 6.25 * db.profile.height - 5 * db.profile.age + 5) + " kkal";
-      const resTdee = document.getElementById("res-tdee");
-      if (resTdee) resTdee.textContent = targetCal + " kkal";
+      document.getElementById("res-bmr").textContent = Math.round(10 * db.profile.weight + 6.25 * db.profile.height - 5 * db.profile.age + 5) + " kkal";
+      document.getElementById("res-tdee").textContent = targetCal + " kkal";
       
-      const streakCount = document.getElementById("streak-count");
-      if (streakCount) streakCount.textContent = `🔥 ${db.streak} Hari`;
-      const streakCountMob = document.getElementById("streak-count-mob");
-      if (streakCountMob) streakCountMob.textContent = `🔥 ${db.streak} Hari`;
+      document.getElementById("streak-count").textContent = `🔥 ${db.streak} Hari`;
+      document.getElementById("streak-count-mob").textContent = `🔥 ${db.streak} Hari`;
 
       const splitPro = Math.round(targetPro / 4);
       const timingList = document.getElementById("protein-timing-list");
@@ -1257,7 +1361,7 @@
         const labelStr = i === 0 ? 'Hari Ini' : i === 1 ? 'Kemarin' : `${i} Hari Lalu`;
         sevenDaysLabels.push(labelStr);
         
-        const dayTotal = db.foods.filter(f => f.date === dateStr).reduce((acc, f) => acc + f.cal, 0);
+        const dayTotal = db.foods.filter(f => f.date === dateStr).reduce((acc, f) => acc + Number(f.cal), 0);
         sevenDaysData.push(dayTotal);
       }
 
@@ -1269,7 +1373,7 @@
           type: 'bar',
           data: {
             labels: sevenDaysLabels,
-            datasets: [{ label: 'Asupan Kalori', data: sevenDaysData, backgroundColor: '#10b981', borderRadius: 8 }]
+            datasets: [{ label: 'Asupan Kalori Aktual (kkcal)', data: sevenDaysData, backgroundColor: '#10b981', borderRadius: 8 }]
           },
           options: { 
             responsive: true, 
@@ -1292,30 +1396,124 @@
 
     function downloadPDFReport() {
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+      const doc = new jsPDF('p', 'mm', 'a4');
+      
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+
+      try {
+        const imgWidth = 80;
+        const imgHeight = 80;
+        const xPos = (pageWidth - imgWidth) / 2;
+        const yPos = (pageHeight - imgHeight) / 2;
+
+        const imgData = 'logo2.png'; 
+        
+        doc.setGState(new doc.GState({ opacity: 0.08 })); 
+        doc.addImage(imgData, 'PNG', xPos, yPos, imgWidth, imgHeight);
+        doc.setGState(new doc.GState({ opacity: 1.0 }));
+      } catch (e) {
+        console.log("Watermark logo skipped or failed to load:", e);
+      }
+
+      doc.setFillColor(4, 120, 87);
+      doc.rect(0, 0, pageWidth, 25, 'F');
+
+      doc.setTextColor(255, 255, 255);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(18);
-      doc.text("Laporan Kesehatan & Nutrisi Harian", 14, 20);
-      doc.setFontSize(11);
+      doc.setFontSize(16);
+      doc.text("LAPORAN KESEHATAN & NUTRISI HARIAN", 14, 16);
+
+      let startY = 35;
+      doc.setFillColor(248, 249, 250);
+      doc.setDrawColor(220, 224, 230);
+      doc.roundedRect(14, startY, pageWidth - 28, 32, 3, 3, 'FD');
+
+      doc.setTextColor(30, 41, 59);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.text("Informasi Pengguna & Target:", 20, startY + 7);
+
       doc.setFont("helvetica", "normal");
-      doc.text(`Nama Pengguna: ${db.profile.name || 'Pengguna'}`, 14, 28);
-      doc.text(`Tanggal: ${document.getElementById("global-date").value}`, 14, 35);
-      doc.text(`Target Kalori TDEE: ${db.profile.targetCal} kkal`, 14, 42);
-      doc.text(`Berat Badan Saat Ini: ${db.profile.weight} kg`, 14, 49);
+      doc.setFontSize(9);
+      const currentDate = document.getElementById("global-date").value;
+      doc.text(`Nama Pengguna : ${db.profile.name || 'Pengguna'}`, 20, startY + 14);
+      doc.text(`Tanggal Laporan : ${currentDate}`, 20, startY + 20);
+      doc.text(`Target Kalori TDEE : ${db.profile.targetCal} kkal`, 110, startY + 14);
+      doc.text(`Berat Badan Saat Ini : ${db.profile.weight} kg`, 110, startY + 20);
 
-      let y = 60;
+      startY = 75;
       doc.setFont("helvetica", "bold");
-      doc.text("Daftar Konsumsi Makanan:", 14, y);
-      y += 8;
+      doc.setFontSize(12);
+      doc.setTextColor(30, 41, 59);
+      doc.text("Daftar Konsumsi Makanan", 14, startY);
 
-      db.foods.filter(f => f.date === document.getElementById("global-date").value).forEach((f, index) => {
-        doc.setFont("helvetica", "normal");
-        doc.text(`${index + 1}. [${f.meal}] ${f.name} - ${f.cal} kkal (P:${f.pro}g, K:${f.carb}g, L:${f.fat}g)`, 14, y);
-        y += 7;
+      startY += 4;
+      const todayFoods = db.foods.filter(f => f.date === currentDate);
+      const data = todayFoods.map((f, index) => [
+        index + 1,
+        f.meal,
+        f.name,
+        `${f.cal} kkal`,
+        `P: ${f.pro}g | K: ${f.carb}g | L: ${f.fat}g`
+      ]);
+
+      if (data.length === 0) {
+        data.push(["-", "-", "Belum ada catatan makanan untuk tanggal ini.", "-", "-"]);
+      }
+
+      let tableY = startY + 6;
+      
+      doc.setFillColor(4, 120, 87);
+      doc.rect(14, tableY, pageWidth - 28, 8, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "bold");
+      doc.text("No", 18, tableY + 5.5);
+      doc.text("Waktu", 30, tableY + 5.5);
+      doc.text("Menu Makanan", 55, tableY + 5.5);
+      doc.text("Kalori", 130, tableY + 5.5);
+      doc.text("Detail Makro (P / K / L)", 155, tableY + 5.5);
+
+      tableY += 8;
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(50, 50, 50);
+
+      todayFoods.forEach((f, index) => {
+        if (tableY > pageHeight - 30) {
+          doc.addPage();
+          tableY = 20;
+        }
+        
+        if (index % 2 === 0) {
+          doc.setFillColor(252, 253, 253);
+          doc.rect(14, tableY, pageWidth - 28, 8, 'F');
+        }
+
+        doc.text(String(index + 1), 18, tableY + 5.5);
+        doc.text(String(f.meal), 30, tableY + 5.5);
+        doc.text(String(f.name), 55, tableY + 5.5, { maxWidth: 70 });
+        doc.text(`${f.cal} kkal`, 130, tableY + 5.5);
+        doc.text(`P:${f.pro}g  K:${f.carb}g  L:${f.fat}g`, 155, tableY + 5.5);
+
+        doc.setDrawColor(235, 238, 242);
+        doc.line(14, tableY + 8, pageWidth - 14, tableY + 8);
+        
+        tableY += 8;
       });
 
-      doc.save("Laporan-Kesehatan-Pro.pdf");
-      showToast("Laporan PDF berhasil diunduh!");
+      const footerY = pageHeight - 15;
+      doc.setDrawColor(200, 200, 200);
+      doc.line(14, footerY - 5, pageWidth - 14, footerY - 5);
+      
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(8);
+      doc.setTextColor(150, 150, 150);
+      doc.text("Laporan ini digenerate secara otomatis oleh HealthTracker Pro Edition.", 14, footerY);
+      doc.text(`Dicetak pada: ${new Date().toLocaleString()}`, pageWidth - 14, footerY, { align: "right" });
+
+      doc.save(`Laporan-Kesehatan-${currentDate}.pdf`);
+      showToast("Laporan PDF profesional berhasil diunduh!");
     }
 
     function renderAll() {
@@ -1330,8 +1528,7 @@
       lucide.createIcons();
     }
 
-    const globalDateEl = document.getElementById("global-date");
-    if (globalDateEl) globalDateEl.onchange = renderAll;
+    if (globalDateInput) globalDateInput.onchange = renderAll;
     renderAll();
   </script>
 </body>
