@@ -740,6 +740,53 @@
       lastActiveDate: savedData.lastActiveDate || todayStr
     };
 
+    // 1. Fungsi untuk Menyimpan Profil (Dipanggil saat tombol Simpan diklik)
+function simpanProfil() {
+    const profilData = {
+        nama: document.getElementById('input-nama').value,
+        usia: document.getElementById('input-usia').value,
+        berat: document.getElementById('input-berat').value,
+        tinggi: document.getElementById('input-tinggi').value,
+        levelAktivitas: document.getElementById('select-aktivitas').value, // Ambil nilai level aktivitas
+        targetUtama: document.getElementById('select-target').value
+    };
+
+    // Simpan ke localStorage agar tidak hilang saat apps ditutup/dibuka ulang
+    localStorage.setItem('healthTracker_profil', JSON.stringify(profilData));
+    
+    alert('Profil berhasil disimpan!');
+    // Lanjutkan perhitungan TEE/kalori di sini...
+}
+
+// 2. Fungsi untuk Memuat Profil (Dipanggil saat aplikasi pertama kali dibuka)
+function muatProfil() {
+    const savedData = localStorage.getItem('healthTracker_profil');
+    
+    if (savedData) {
+        const profilData = JSON.parse(savedData);
+        
+        // Kembalikan nilai ke masing-masing elemen form
+        if(document.getElementById('input-nama')) document.getElementById('input-nama').value = profilData.nama || '';
+        if(document.getElementById('input-usia')) document.getElementById('input-usia').value = profilData.usia || '';
+        if(document.getElementById('input-berat')) document.getElementById('input-berat').value = profilData.berat || '';
+        if(document.getElementById('input-tinggi')) document.getElementById('input-tinggi').value = profilData.tinggi || '';
+        
+        // INI KUNCI UTAMA: Set dropdown level aktivitas sesuai yang disimpan user sebelumnya
+        if(document.getElementById('select-aktivitas')) {
+            document.getElementById('select-aktivitas').value = profilData.levelAktivitas || 'sedang';
+        }
+        
+        if(document.getElementById('select-target')) {
+            document.getElementById('select-target').value = profilData.targetUtama || 'defisit';
+        }
+    }
+}
+
+// Panggil fungsi muatProfil saat halaman selesai dimuat
+window.addEventListener('DOMContentLoaded', () => {
+    muatProfil();
+});
+
     function checkAndUpdateStreak() {
       const lastActive = db.lastActiveDate;
       const currentDate = new Date().toISOString().slice(0, 10);
