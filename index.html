@@ -318,47 +318,43 @@
     <!-- 4. SCREEN: JADWAL & LATIHAN -->
     <section id="screen-workout" class="screen space-y-6">
       <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-    <div>
-      <h2 class="text-2xl font-extrabold text-slate-800">Jadwal & Tracking Latihan</h2>
-      <p class="text-sm text-slate-500">Pilih program latihan mingguan atau catat pembakaran kalori latihanmu.</p>
-    </div>
-    
-    <!-- Bagian kontrol (Dropdown & Tombol) -->
-    <div class="flex items-center gap-2.5 w-full sm:w-auto">
-      
-      <!-- CUSTOM DROPDOWN BERBASIS DIV -->
-      <div class="relative flex-1 sm:min-w-[220px]">
-        <button type="button" onclick="toggleCustomDropdown()" id="custom-dropdown-btn" class="w-full bg-white border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-bold shadow-xs flex items-center justify-between text-slate-700 hover:border-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-600">
-          <span class="flex items-center gap-2 truncate">
-            <i data-lucide="dumbbell" class="w-4 h-4 text-emerald-700 shrink-0"></i>
-            <span id="selected-split-text" class="truncate">Push / Pull / Legs (PPL)</span>
-          </span>
-          <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200" id="dropdown-chevron"></i>
-        </button>
-
-        <!-- Menu Popup Kustom -->
-        <div id="custom-dropdown-menu" class="hidden absolute right-0 left-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-45 divide-y divide-slate-100">
-          <div onclick="selectWorkoutSplit('Push / Pull / Legs')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
-            <span>Push / Pull / Legs (PPL)</span>
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Push / Pull / Legs"></i>
-          </div>
-          <div onclick="selectWorkoutSplit('Upper / Lower')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
-            <span>Upper / Lower Body</span>
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Upper / Lower"></i>
-          </div>
-          <div onclick="selectWorkoutSplit('Full Body')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
-            <span>Full Body Workout</span>
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Full Body"></i>
-          </div>
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-800">Jadwal & Tracking Latihan</h2>
+          <p class="text-sm text-slate-500">Pilih program latihan mingguan atau catat pembakaran kalori latihanmu.</p>
         </div>
-      </div>
-      
-      <!-- Tombol Catat Workout (Ukurannya menyesuaikan agar berdampingan di HP) -->
-      <button onclick="openWorkoutModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3.5 py-2.5 rounded-xl text-sm shadow-md transition flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap">
-        <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden xs:inline">Catat</span>Workout
-      </button>
-    </div>
-</header>
+        
+        <div class="flex items-center gap-2.5 w-full sm:w-auto">
+          <!-- CUSTOM DROPDOWN BERBASIS DIV -->
+          <div class="relative flex-1 sm:min-w-[220px]">
+            <button type="button" onclick="toggleCustomDropdown()" id="custom-dropdown-btn" class="w-full bg-white border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-bold shadow-xs flex items-center justify-between text-slate-700 hover:border-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              <span class="flex items-center gap-2 truncate">
+                <i data-lucide="dumbbell" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+                <span id="selected-split-text" class="truncate">Push / Pull / Legs</span>
+              </span>
+              <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200" id="dropdown-chevron"></i>
+            </button>
+
+            <div id="custom-dropdown-menu" class="hidden absolute right-0 left-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-45 divide-y divide-slate-100">
+              <div onclick="selectWorkoutSplit('Push / Pull / Legs')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
+                <span>Push / Pull / Legs</span>
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Push / Pull / Legs"></i>
+              </div>
+              <div onclick="selectWorkoutSplit('Upper / Lower')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
+                <span>Upper / Lower Body</span>
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Upper / Lower"></i>
+              </div>
+              <div onclick="selectWorkoutSplit('Full Body')" class="px-4 py-3 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center justify-between transition">
+                <span>Full Body Workout</span>
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0 split-check" data-val="Full Body"></i>
+              </div>
+            </div>
+          </div>
+          
+          <button onclick="openWorkoutModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3.5 py-2.5 rounded-xl text-sm shadow-md transition flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap">
+            <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden xs:inline">Catat</span>Workout
+          </button>
+        </div>
+      </header>
 
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -632,69 +628,63 @@
 
   <script>
     const DATABASE_MAKANAN = {
-    // --- Makanan Pokok & Karbohidrat ---
-    "Nasi Putih (1 piring/150g)": {"kalori": 204, "protein": 4.2, "karbo": 44.0, "lemak": 0.4},
-    "Oatmeal (40g dry)": {"kalori": 150, "protein": 5.0, "karbo": 27.0, "lemak": 2.5},
-    "Nasi Goreng (1 piring)": {"kalori": 510, "protein": 12.5, "karbo": 65.0, "lemak": 21.0},
-    "Roti Tawar Gandum (2 lembar)": {"kalori": 130, "protein": 5.0, "karbo": 24.0, "lemak": 1.5},
-    "Indomie Goreng Standard (1 bungkus)": {"kalori": 380, "protein": 7.0, "karbo": 54.0, "lemak": 14.0},
-    "Indomie Goreng Jumbo (1 bungkus)": {"kalori": 530, "protein": 10.0, "karbo": 75.0, "lemak": 20.0},
-    "Indomie Rebus Rasa Ayam Bawang / Kari (1 bungkus)": {"kalori": 340, "protein": 6.5, "karbo": 48.0, "lemak": 13.0},
+      "Nasi Putih (1 piring/150g)": {"kalori": 204, "protein": 4.2, "karbo": 44.0, "lemak": 0.4},
+      "Oatmeal (40g dry)": {"kalori": 150, "protein": 5.0, "karbo": 27.0, "lemak": 2.5},
+      "Nasi Goreng (1 piring)": {"kalori": 510, "protein": 12.5, "karbo": 65.0, "lemak": 21.0},
+      "Roti Tawar Gandum (2 lembar)": {"kalori": 130, "protein": 5.0, "karbo": 24.0, "lemak": 1.5},
+      "Indomie Goreng Standard (1 bungkus)": {"kalori": 380, "protein": 7.0, "karbo": 54.0, "lemak": 14.0},
+      "Indomie Goreng Jumbo (1 bungkus)": {"kalori": 530, "protein": 10.0, "karbo": 75.0, "lemak": 20.0},
+      "Indomie Rebus Rasa Ayam Bawang / Kari (1 bungkus)": {"kalori": 340, "protein": 6.5, "karbo": 48.0, "lemak": 13.0},
 
-    // --- Snack, Minuman & Dessert ---
-    "Dubai Chewy Cookies (1 pcs/70g)": {"kalori": 320, "protein": 4.5, "karbo": 38.0, "lemak": 17.0},
-    "Es Krim Vanilla / Cokelat (1 scoop/75g)": {"kalori": 150, "protein": 2.5, "karbo": 18.0, "lemak": 7.5},
-    "Kopi Hitam / Americano Unsweetened (1 gelas)": {"kalori": 5, "protein": 0.3, "karbo": 0.0, "lemak": 0.0},
-    "Milk Tea / Boba Drink (1 cup standard)": {"kalori": 350, "protein": 3.0, "karbo": 58.0, "lemak": 12.0},
-    "Yogurt Plain / Greek Yogurt (1 cup/125g)": {"kalori": 100, "protein": 7.0, "karbo": 8.0, "lemak": 4.0},
-    
-    // --- Olahan Ayam & Daging ---
-    "Ayam Goreng - Dada (1 pcs)": {"kalori": 220, "protein": 29.0, "karbo": 0.0, "lemak": 11.0},
-    "Ayam Goreng - Paha Atas / Thigh (1 pcs)": {"kalori": 210, "protein": 22.0, "karbo": 0.0, "lemak": 13.0},
-    "Ayam Goreng - Paha Bawah / Drumstick (1 pcs)": {"kalori": 160, "protein": 18.0, "karbo": 0.0, "lemak": 9.5},
-    "Ayam Goreng - Kepak / Sayap (1 pcs)": {"kalori": 140, "protein": 12.0, "karbo": 0.0, "lemak": 10.0},
-    "Ayam Goreng - Ati Ampela (1 pasang)": {"kalori": 120, "protein": 16.0, "karbo": 0.5, "lemak": 5.5},
+      "Dubai Chewy Cookies (1 pcs/70g)": {"kalori": 320, "protein": 4.5, "karbo": 38.0, "lemak": 17.0},
+      "Es Krim Vanilla / Cokelat (1 scoop/75g)": {"kalori": 150, "protein": 2.5, "karbo": 18.0, "lemak": 7.5},
+      "Kopi Hitam / Americano Unsweetened (1 gelas)": {"kalori": 5, "protein": 0.3, "karbo": 0.0, "lemak": 0.0},
+      "Milk Tea / Boba Drink (1 cup standard)": {"kalori": 350, "protein": 3.0, "karbo": 58.0, "lemak": 12.0},
+      "Yogurt Plain / Greek Yogurt (1 cup/125g)": {"kalori": 100, "protein": 7.0, "karbo": 8.0, "lemak": 4.0},
+      
+      "Ayam Goreng - Dada (1 pcs)": {"kalori": 220, "protein": 29.0, "karbo": 0.0, "lemak": 11.0},
+      "Ayam Goreng - Paha Atas / Thigh (1 pcs)": {"kalori": 210, "protein": 22.0, "karbo": 0.0, "lemak": 13.0},
+      "Ayam Goreng - Paha Bawah / Drumstick (1 pcs)": {"kalori": 160, "protein": 18.0, "karbo": 0.0, "lemak": 9.5},
+      "Ayam Goreng - Kepak / Sayap (1 pcs)": {"kalori": 140, "protein": 12.0, "karbo": 0.0, "lemak": 10.0},
+      "Ayam Goreng - Ati Ampela (1 pasang)": {"kalori": 120, "protein": 16.0, "karbo": 0.5, "lemak": 5.5},
 
-    "Fried Chicken - Dada (1 pcs)": {"kalori": 390, "protein": 34.0, "karbo": 11.0, "lemak": 23.0},
-    "Fried Chicken - Paha Upper (1 pcs)": {"kalori": 330, "protein": 24.0, "karbo": 9.0, "lemak": 22.0},
-    "Fried Chicken - Paha Bawah / Drumstick (1 pcs)": {"kalori": 220, "protein": 16.0, "karbo": 7.0, "lemak": 14.0},
-    "Fried Chicken - Sayap (1 pcs)": {"kalori": 210, "protein": 13.0, "karbo": 8.0, "lemak": 14.0},
-    "Ayam Geprek + Tepung (1 porsi)": {"kalori": 420, "protein": 28.0, "karbo": 15.0, "lemak": 27.0},
-    "Ayam Popcorn / Crispy Bites (100g)": {"kalori": 290, "protein": 18.0, "karbo": 16.0, "lemak": 17.0},
-    "Dada Ayam Bakar (100g)": {"kalori": 165, "protein": 31.0, "karbo": 0.0, "lemak": 3.6},
-    "Dada Ayam Rebus/Kukus (100g)": {"kalori": 130, "protein": 28.0, "karbo": 0.0, "lemak": 2.0},
-    "Sate Ayam + Bumbu Kacang (10 tusuk)": {"kalori": 420, "protein": 32.0, "karbo": 12.0, "lemak": 26.0},
-    "Sate Kambing + Bumbu Kecap (10 tusuk)": {"kalori": 490, "protein": 35.0, "karbo": 10.0, "lemak": 33.0},
-    "Dimsum Ayam (4 pcs)": {"kalori": 210, "protein": 14.0, "karbo": 18.0, "lemak": 9.0},
-    
-    // --- Protein Nabati, Telur & Pendamping ---
-    "Martabak Telur Daging Sapi (Standard 4 Telur - 1 Potong)": {"kalori": 190, "protein": 9.5, "karbo": 10.0, "lemak": 12.5},
-    "Martabak Telur Daging Sapi Pacenongan/Spesial (1 Potong Besar)": {"kalori": 260, "protein": 13.0, "karbo": 12.0, "lemak": 18.0},
-    "Telur Rebus (1 butir)": {"kalori": 78, "protein": 6.3, "karbo": 0.6, "lemak": 5.3},
-    "Telur Dadar (1 butir)": {"kalori": 110, "protein": 6.5, "karbo": 0.8, "lemak": 9.0},
-    "Tahu Goreng (1 potong)": {"kalori": 35, "protein": 2.0, "karbo": 1.5, "lemak": 2.5},
-    "Tempe Goreng (1 potong)": {"kalori": 50, "protein": 4.0, "karbo": 3.0, "lemak": 3.0},
-    "Whey Protein Shake (1 scoop)": {"kalori": 120, "protein": 24.0, "karbo": 3.0, "lemak": 1.5},
+      "Fried Chicken - Dada (1 pcs)": {"kalori": 390, "protein": 34.0, "karbo": 11.0, "lemak": 23.0},
+      "Fried Chicken - Paha Upper (1 pcs)": {"kalori": 330, "protein": 24.0, "karbo": 9.0, "lemak": 22.0},
+      "Fried Chicken - Paha Bawah / Drumstick (1 pcs)": {"kalori": 220, "protein": 16.0, "karbo": 7.0, "lemak": 14.0},
+      "Fried Chicken - Sayap (1 pcs)": {"kalori": 210, "protein": 13.0, "karbo": 8.0, "lemak": 14.0},
+      "Ayam Geprek + Tepung (1 porsi)": {"kalori": 420, "protein": 28.0, "karbo": 15.0, "lemak": 27.0},
+      "Ayam Popcorn / Crispy Bites (100g)": {"kalori": 290, "protein": 18.0, "karbo": 16.0, "lemak": 17.0},
+      "Dada Ayam Bakar (100g)": {"kalori": 165, "protein": 31.0, "karbo": 0.0, "lemak": 3.6},
+      "Dada Ayam Rebus/Kukus (100g)": {"kalori": 130, "protein": 28.0, "karbo": 0.0, "lemak": 2.0},
+      "Sate Ayam + Bumbu Kacang (10 tusuk)": {"kalori": 420, "protein": 32.0, "karbo": 12.0, "lemak": 26.0},
+      "Sate Kambing + Bumbu Kecap (10 tusuk)": {"kalori": 490, "protein": 35.0, "karbo": 10.0, "lemak": 33.0},
+      "Dimsum Ayam (4 pcs)": {"kalori": 210, "protein": 14.0, "karbo": 18.0, "lemak": 9.0},
+      
+      "Martabak Telur Daging Sapi (Standard 4 Telur - 1 Potong)": {"kalori": 190, "protein": 9.5, "karbo": 10.0, "lemak": 12.5},
+      "Martabak Telur Daging Sapi Pacenongan/Spesial (1 Potong Besar)": {"kalori": 260, "protein": 13.0, "karbo": 12.0, "lemak": 18.0},
+      "Telur Rebus (1 butir)": {"kalori": 78, "protein": 6.3, "karbo": 0.6, "lemak": 5.3},
+      "Telur Dadar (1 butir)": {"kalori": 110, "protein": 6.5, "karbo": 0.8, "lemak": 9.0},
+      "Tahu Goreng (1 potong)": {"kalori": 35, "protein": 2.0, "karbo": 1.5, "lemak": 2.5},
+      "Tempe Goreng (1 potong)": {"kalori": 50, "protein": 4.0, "karbo": 3.0, "lemak": 3.0},
+      "Whey Protein Shake (1 scoop)": {"kalori": 120, "protein": 24.0, "karbo": 3.0, "lemak": 1.5},
 
-    // --- Aneka Susu ---
-    "Susu Dancow FortiGro Full Cream (1 saset/27g)": {"kalori": 130, "protein": 6.0, "karbo": 12.0, "lemak": 7.0},
-    "Susu Dancow FortiGro Cokelat (1 saset/39g)": {"kalori": 160, "protein": 5.0, "karbo": 23.0, "lemak": 5.0},
-    "Susu Zee Swirtz Cokelat/Vanila (1 saset/40g)": {"kalori": 160, "protein": 5.0, "karbo": 24.0, "lemak": 4.5},
-    "Susu Milo Bubuk (1 saset/22g)": {"kalori": 90, "protein": 2.0, "karbo": 14.0, "lemak": 2.5},
-    "Susu UHT Full Cream / Ultra Milk (200ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
-    "Susu Indomilk UHT Cokelat (190ml)": {"kalori": 140, "protein": 5.0, "karbo": 21.0, "lemak": 4.0},
-    "Susu Bear Brand / Beruang (1 kaleng/189ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
+      "Susu Dancow FortiGro Full Cream (1 saset/27g)": {"kalori": 130, "protein": 6.0, "karbo": 12.0, "lemak": 7.0},
+      "Susu Dancow FortiGro Cokelat (1 saset/39g)": {"kalori": 160, "protein": 5.0, "karbo": 23.0, "lemak": 5.0},
+      "Susu Zee Swirtz Cokelat/Vanila (1 saset/40g)": {"kalori": 160, "protein": 5.0, "karbo": 24.0, "lemak": 4.5},
+      "Susu Milo Bubuk (1 saset/22g)": {"kalori": 90, "protein": 2.0, "karbo": 14.0, "lemak": 2.5},
+      "Susu UHT Full Cream / Ultra Milk (200ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
+      "Susu Indomilk UHT Cokelat (190ml)": {"kalori": 140, "protein": 5.0, "karbo": 21.0, "lemak": 4.0},
+      "Susu Bear Brand / Beruang (1 kaleng/189ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
 
-    // --- Jajanan Pasar & Dessert Tradisional/Modern ---
-    "Martabak Manis Cokelat Keju (1 potong)": {"kalori": 270, "protein": 5.0, "karbo": 34.0, "lemak": 13.0},
-    "Pisang Goreng (1 pcs)": {"kalori": 140, "protein": 1.2, "karbo": 22.0, "lemak": 5.5},
-    "Roti Bakar Cokelat Keju (1 porsi)": {"kalori": 380, "protein": 8.0, "karbo": 52.0, "lemak": 16.0},
-    "Kue Klepon (3 pcs)": {"kalori": 135, "protein": 1.5, "karbo": 26.0, "lemak": 3.0},
-    "Donat Cokelat Meses (1 pcs)": {"kalori": 240, "protein": 4.0, "karbo": 31.0, "lemak": 11.0},
-    "Es Cendol / Dawet (1 gelas)": {"kalori": 220, "protein": 2.0, "karbo": 38.0, "lemak": 7.0},
-    "Es Teler (1 mangkok)": {"kalori": 310, "protein": 3.5, "karbo": 48.0, "lemak": 12.0},
-    "Kopi Susu Gula Aren (1 gelas)": {"kalori": 180, "protein": 3.0, "karbo": 25.0, "lemak": 7.0}
-};
+      "Martabak Manis Cokelat Keju (1 potong)": {"kalori": 270, "protein": 5.0, "karbo": 34.0, "lemak": 13.0},
+      "Pisang Goreng (1 pcs)": {"kalori": 140, "protein": 1.2, "karbo": 22.0, "lemak": 5.5},
+      "Roti Bakar Cokelat Keju (1 porsi)": {"kalori": 380, "protein": 8.0, "karbo": 52.0, "lemak": 16.0},
+      "Kue Klepon (3 pcs)": {"kalori": 135, "protein": 1.5, "karbo": 26.0, "lemak": 3.0},
+      "Donat Cokelat Meses (1 pcs)": {"kalori": 240, "protein": 4.0, "karbo": 31.0, "lemak": 11.0},
+      "Es Cendol / Dawet (1 gelas)": {"kalori": 220, "protein": 2.0, "karbo": 38.0, "lemak": 7.0},
+      "Es Teler (1 mangkok)": {"kalori": 310, "protein": 3.5, "karbo": 48.0, "lemak": 12.0},
+      "Kopi Susu Gula Aren (1 gelas)": {"kalori": 180, "protein": 3.0, "karbo": 25.0, "lemak": 7.0}
+    };
 
     const WORKOUT_PROGRAMS = {
       "Push / Pull / Legs": {
@@ -739,53 +729,6 @@
       lastWaterResetDate: savedData.lastWaterResetDate || todayStr,
       lastActiveDate: savedData.lastActiveDate || todayStr
     };
-
-    // 1. Fungsi untuk Menyimpan Profil (Dipanggil saat tombol Simpan diklik)
-function simpanProfil() {
-    const profilData = {
-        nama: document.getElementById('input-nama').value,
-        usia: document.getElementById('input-usia').value,
-        berat: document.getElementById('input-berat').value,
-        tinggi: document.getElementById('input-tinggi').value,
-        levelAktivitas: document.getElementById('select-aktivitas').value, // Ambil nilai level aktivitas
-        targetUtama: document.getElementById('select-target').value
-    };
-
-    // Simpan ke localStorage agar tidak hilang saat apps ditutup/dibuka ulang
-    localStorage.setItem('healthTracker_profil', JSON.stringify(profilData));
-    
-    alert('Profil berhasil disimpan!');
-    // Lanjutkan perhitungan TEE/kalori di sini...
-}
-
-// 2. Fungsi untuk Memuat Profil (Dipanggil saat aplikasi pertama kali dibuka)
-function muatProfil() {
-    const savedData = localStorage.getItem('healthTracker_profil');
-    
-    if (savedData) {
-        const profilData = JSON.parse(savedData);
-        
-        // Kembalikan nilai ke masing-masing elemen form
-        if(document.getElementById('input-nama')) document.getElementById('input-nama').value = profilData.nama || '';
-        if(document.getElementById('input-usia')) document.getElementById('input-usia').value = profilData.usia || '';
-        if(document.getElementById('input-berat')) document.getElementById('input-berat').value = profilData.berat || '';
-        if(document.getElementById('input-tinggi')) document.getElementById('input-tinggi').value = profilData.tinggi || '';
-        
-        // INI KUNCI UTAMA: Set dropdown level aktivitas sesuai yang disimpan user sebelumnya
-        if(document.getElementById('select-aktivitas')) {
-            document.getElementById('select-aktivitas').value = profilData.levelAktivitas || 'sedang';
-        }
-        
-        if(document.getElementById('select-target')) {
-            document.getElementById('select-target').value = profilData.targetUtama || 'defisit';
-        }
-    }
-}
-
-// Panggil fungsi muatProfil saat halaman selesai dimuat
-window.addEventListener('DOMContentLoaded', () => {
-    muatProfil();
-});
 
     function checkAndUpdateStreak() {
       const lastActive = db.lastActiveDate;
@@ -895,15 +838,6 @@ window.addEventListener('DOMContentLoaded', () => {
       toggleWorkoutDropdown();
     }
 
-    window.addEventListener('click', function(e) {
-      const dropdown = document.getElementById('workout-dropdown-list');
-      const button = dropdown?.previousElementSibling;
-      if (dropdown && button && !button.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.classList.add('hidden');
-        document.getElementById('workout-chevron')?.classList.remove('rotate-180');
-      }
-    });
-
     function saveDB() {
       localStorage.setItem("health_pro_db", JSON.stringify(db));
     }
@@ -955,7 +889,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const splitTextEl = document.getElementById("selected-split-text");
       if (splitTextEl) {
         splitTextEl.textContent = 
-          splitName === "Push / Pull / Legs" ? "Push / Pull / Legs (PPL)" :
+          splitName === "Push / Pull / Legs" ? "Push / Pull / Legs" :
           splitName === "Upper / Lower" ? "Upper / Lower Body" : "Full Body Workout";
       }
 
@@ -1127,9 +1061,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function renderFoodQueue() {
       const list = document.getElementById("food-queue-list");
-      document.getElementById("queue-count").textContent = foodQueue.length;
-      const totalCal = foodQueue.reduce((acc, cur) => acc + cur.cal, 0);
-      document.getElementById("queue-total-cal").textContent = `Total: ${totalCal} kkal`;
+      const countEl = document.getElementById("queue-count");
+      const totalCalEl = document.getElementById("queue-total-cal");
+      if (!list) return;
+
+      countEl.textContent = foodQueue.length;
+      const totalCal = foodQueue.reduce((acc, item) => acc + item.cal, 0);
+      totalCalEl.textContent = `Total: ${totalCal} kkal`;
 
       if (foodQueue.length === 0) {
         list.innerHTML = `<p class="text-slate-400 text-center py-3">Belum ada makanan ditambahkan ke list.</p>`;
@@ -1139,13 +1077,19 @@ window.addEventListener('DOMContentLoaded', () => {
       list.innerHTML = foodQueue.map(item => `
         <div class="py-2.5 flex items-center justify-between">
           <div>
-            <p class="font-bold text-slate-800">[${item.meal}] ${item.name}</p>
-            <p class="text-[10px] text-slate-500">${item.cal} kkal · P:${item.pro}g · K:${item.carb}g · L:${item.fat}g</p>
+            <p class="font-bold text-slate-800 flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold border ${getMealBadgeStyle(item.meal)}">${item.meal}</span>
+              ${item.name}
+            </p>
+            <p class="text-[10px] text-slate-500 mt-1">${item.cal} kkal · P:${item.pro}g · K:${item.carb}g · L:${item.fat}g</p>
           </div>
           <button type="button" onclick="removeFromQueue(${item.id})" class="text-rose-600 hover:text-rose-800 font-bold p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
       `).join("");
-      lucide.createIcons();
+      
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     }
 
     function saveAllFoodQueue() {
@@ -1203,16 +1147,22 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderFoodList() {
+      const list = document.getElementById("food-log-list");
+      if (!list) return;
+
       const date = document.getElementById("global-date").value;
       let foods = db.foods.filter(f => f.date === date);
 
-      if (currentFilter === 'high-protein') foods = foods.filter(f => f.pro >= 15);
-      if (currentFilter === 'high-carbs') foods = foods.filter(f => f.carb >= 30);
-      if (currentFilter === 'low-fat') foods = foods.filter(f => f.fat <= 5);
+      if (currentFilter === 'high-protein') {
+        foods = foods.filter(f => f.pro >= 15);
+      } else if (currentFilter === 'high-carbs') {
+        foods = foods.sort((a, b) => b.carb - a.carb);
+      } else if (currentFilter === 'low-fat') {
+        foods = foods.sort((a, b) => a.fat - b.fat);
+      }
 
-      const list = document.getElementById("food-log-list");
       if (foods.length === 0) {
-        list.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Belum ada catatan makanan untuk filter ini.</div>`;
+        list.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Belum ada log makanan tercatat untuk tanggal ini.</div>`;
         return;
       }
 
@@ -1220,7 +1170,7 @@ window.addEventListener('DOMContentLoaded', () => {
         <div class="p-4 flex items-center justify-between hover:bg-slate-50/50 transition">
           <div class="space-y-1">
             <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold border bg-emerald-50 text-emerald-700 border-emerald-200">${f.meal}</span>
+              <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold border ${getMealBadgeStyle(f.meal)}">${f.meal}</span>
               <h4 class="font-bold text-slate-800 text-sm">${f.name}</h4>
             </div>
             <p class="text-xs text-slate-500">P ${f.pro}g · K ${f.carb}g · L ${f.fat}g</p>
@@ -1231,14 +1181,17 @@ window.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `).join("");
-      lucide.createIcons();
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     }
 
     function renderWeeklyWorkouts() {
       const pilih_split = db.profile.selectedSplit || "Push / Pull / Legs";
       
       const displayText = 
-        pilih_split === "Push / Pull / Legs" ? "Push / Pull / Legs (PPL)" :
+        pilih_split === "Push / Pull / Legs" ? "Push / Pull / Legs" :
         pilih_split === "Upper / Lower" ? "Upper / Lower Body" : "Full Body Workout";
       
       const splitTextEl = document.getElementById("selected-split-text");
@@ -1391,14 +1344,12 @@ window.addEventListener('DOMContentLoaded', () => {
       const targetCal = db.profile.targetCal || 2000;
       const targetPro = db.profile.targetProtein || 120;
 
-      // Sinkronisasi form profil dengan data tersimpan
       document.getElementById("welcome-title").textContent = `Halo, ${db.profile.name || 'Pengguna'}! 👋`;
       document.getElementById("profile-name-input").value = db.profile.name || '';
       document.getElementById("calc-age").value = db.profile.age || 22;
       document.getElementById("calc-weight").value = db.profile.weight || 65;
       document.getElementById("calc-height").value = db.profile.height || 170;
       
-      // FIX: Set nilai hidden input dan teks dropdown level aktivitas sesuai db.profile
       const savedActivity = db.profile.activity || 1.55;
       document.getElementById("calc-activity").value = savedActivity;
       const activityLabels = {
@@ -1409,7 +1360,6 @@ window.addEventListener('DOMContentLoaded', () => {
       };
       document.getElementById("activity-selected-text").textContent = activityLabels[savedActivity] || "Sedang (3–5 hari/minggu)";
 
-      // FIX: Set nilai hidden input dan teks dropdown target utama sesuai db.profile
       const savedGoal = db.profile.goal || "deficit";
       document.getElementById("calc-goal").value = savedGoal;
       const goalLabels = {
@@ -1419,7 +1369,6 @@ window.addEventListener('DOMContentLoaded', () => {
       };
       document.getElementById("target-selected-text").textContent = goalLabels[savedGoal] || "Defisit Kalori (Turun Berat)";
 
-      // Sisa kode di bawahnya tetap sama...
       document.getElementById("dash-rem-cal").textContent = Math.max(0, targetCal - Math.round(totals.cal));
       document.getElementById("dash-cons-cal").textContent = Math.round(totals.cal) + " kkal dikonsumsi";
       
@@ -1512,6 +1461,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+
     function syncToCloud() {
       const url = document.getElementById("sheets-url").value;
       if (!url) return showToast("Masukkan webhook URL Google Sheets.");
@@ -1526,21 +1476,6 @@ window.addEventListener('DOMContentLoaded', () => {
       
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
-
-      try {
-        const imgWidth = 80;
-        const imgHeight = 80;
-        const xPos = (pageWidth - imgWidth) / 2;
-        const yPos = (pageHeight - imgHeight) / 2;
-
-        const imgData = 'logo2.png'; 
-        
-        doc.setGState(new doc.GState({ opacity: 0.08 })); 
-        doc.addImage(imgData, 'PNG', xPos, yPos, imgWidth, imgHeight);
-        doc.setGState(new doc.GState({ opacity: 1.0 }));
-      } catch (e) {
-        console.log("Watermark logo skipped or failed to load:", e);
-      }
 
       doc.setFillColor(4, 120, 87);
       doc.rect(0, 0, pageWidth, 25, 'F');
@@ -1640,6 +1575,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
       doc.save(`Laporan-Kesehatan-${currentDate}.pdf`);
       showToast("Laporan PDF profesional berhasil diunduh!");
+    }
+
+    function getMealBadgeStyle(mealName) {
+      switch (mealName) {
+        case 'Pagi':
+          return 'bg-amber-50 text-amber-700 border-amber-200';
+        case 'Siang':
+          return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        case 'Malam':
+          return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+        case 'Camilan':
+          return 'bg-rose-50 text-rose-700 border-rose-200';
+        default:
+          return 'bg-slate-50 text-slate-700 border-slate-200';
+      }
     }
 
     function renderAll() {
