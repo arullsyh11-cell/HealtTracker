@@ -646,22 +646,56 @@
       }
     };
 
-    // App State Management
-    let db = JSON.parse(localStorage.getItem("health_pro_db") || JSON.stringify({
-      profile: { name: "Pengguna", age: 22, weight: 65, height: 170, activity: 1.55, goal: "deficit", targetCal: 2000, targetProtein: 120, selectedSplit: "Push / Pull / Legs" },
-      foods: [],
-      workouts: [],
-      weights: [{ date: new Date().toISOString().slice(0,10), weight: 65, target: 58 }],
-      water: 0,
-      streak: 0
-    }));
+    // App State Management dengan penanganan aman agar data tidak tereset ke default
+    const todayStr = new Date().toISOString().slice(0, 10);
+    let savedData = JSON.parse(localStorage.getItem("health_pro_db") || "{}");
+    
+    let db = {
+      profile: Object.assign({ name: "Pengguna", age: 22, weight: 65, height: 170, activity: 1.55, goal: "deficit", targetCal: 2000, targetProtein: 120, selectedSplit: "Push / Pull / Legs" }, savedData.profile || {}),
+      foods: savedData.foods || [],
+      workouts: savedData.workouts || [],
+      weights: savedData.weights || [{ date: todayStr, weight: 65, target: 58 }],
+      water: savedData.water || 0,
+      streak: savedData.streak || 0,
+      lastWaterResetDate: savedData.lastWaterResetDate || todayStr,
+      lastActiveDate: savedData.lastActiveDate || todayStr
+    };
 
-    let foodQueue = [];
-    let currentFilter = 'all';
-    let macroPieChartInstance = null;
-    let mealBarChartInstance = null;
-    let weightTrendChartInstance = null;
-    let sevenDayChartInstance = null;
+    // Perbaikan Isu 1: Logic Streak Otomatis Harian
+    function checkAndUpdateStreak() {
+      const lastActive = db.lastActiveDate;
+      const currentDate = new Date().toISOString().slice(0, 10);
+      
+      if (lastActive !== currentDate) {
+        const lastDateObj = new Date(lastActive);
+        const currentDateObj = new Date(currentDate);
+        const diffTime = Math.abs(currentDateObj - lastDateObj);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        const hasActivityToday = db.foods.some(f => f.date === currentDate) || db.workouts.some(w => w.date === currentDate);
+
+        if (diffDays === 1) {
+          if (hasActivityToday) {
+            db.streak += 1;
+            db.lastActiveDate = currentDate;
+          }
+        } else if (diffDays > 1) {
+          db.streak = hasActivityToday ? 1 : 0;
+          db.lastActiveDate = currentDate;
+        }
+        saveDB();
+      }
+    }
+
+    // Perbaikan Isu 2: Reset Air Minum Otomatis Berdasarkan Hari
+    function checkAndResetWaterDaily() {
+      const currentDate = new Date().toISOString().slice(0, 10);
+      if (db.lastWaterResetDate !== currentDate) {
+        db.water = 0;
+        db.lastWaterResetDate = currentDate;
+        saveDB();
+      }
+    }
 
     function saveDB() {
       localStorage.setItem("health_pro_db", JSON.stringify(db));
@@ -691,21 +725,17 @@
       const rawText = document.getElementById("custom-food-desc").value.toLowerCase().trim();
       if (!rawText) return;
 
-      // Set nama makanan final otomatis sama persis dengan ketikan natural pengguna
       document.getElementById("food-name").value = document.getElementById("custom-food-desc").value.trim();
 
-      // Analisis kata kunci di belakang layar secara natural
       let baseCal = 300, basePro = 15, baseCarb = 30, baseFat = 10;
       let multiplier = 1.0;
 
-      // Deteksi porsi dari kata kunci natural
       if (rawText.includes("kecil") || rawText.includes("mini") || rawText.includes("setengah")) {
         multiplier = 0.6;
       } else if (rawText.includes("besar") || rawText.includes("jumbo") || rawText.includes("porsi puas") || rawText.includes("double")) {
         multiplier = 1.6;
       }
 
-      // Deteksi jenis makanan berdasarkan keyword umum
       if (rawText.includes("ayam") || rawText.includes("daging") || rawText.includes("sapi") || rawText.includes("ikan") || rawText.includes("geprek") || rawText.includes("hangry")) {
         baseCal = 400; basePro = 28; baseCarb = 20; baseFat = 18;
       } else if (rawText.includes("nasi") || rawText.includes("mie") || rawText.includes("bubur") || rawText.includes("oatmeal") || rawText.includes("roti")) {
@@ -724,7 +754,6 @@
       document.getElementById("food-fat").value = Math.round(baseFat * multiplier);
     }
 
-    // Event listener real-time untuk input teks bebas custom food
     document.addEventListener("DOMContentLoaded", () => {
       const customDescEl = document.getElementById("custom-food-desc");
       if (customDescEl) {
@@ -832,6 +861,7 @@
       document.getElementById("water-progress").style.width = pct + "%";
     }
 
+    let foodQueue = [];
     function openFoodModal() { 
       foodQueue = [];
       document.getElementById("food-search-input").value = "";
@@ -908,6 +938,8 @@
         });
       });
 
+      db.lastActiveDate = date;
+      if (db.streak === 0) db.streak = 1;
       saveDB();
       closeModal("food-modal");
       renderAll();
@@ -929,6 +961,7 @@
       showToast("Semua log makanan hari ini dibersihkan.");
     }
 
+    let currentFilter = 'all';
     function filterFood(type, btnTarget) {
       currentFilter = type;
       document.querySelectorAll(".food-filter-btn").forEach(b => {
@@ -1022,8 +1055,11 @@
       const met = typeStr.includes("8") ? 8 : typeStr.includes("7") ? 7 : 6;
       const weight = db.profile.weight || 65;
       const burned = Math.round((met * 3.5 * weight / 200) * duration);
+      const currentDate = document.getElementById("global-date").value;
 
-      db.workouts.push({ id: Date.now(), date: document.getElementById("global-date").value, type: typeStr.split(" (")[0], duration, burned });
+      db.workouts.push({ id: Date.now(), date: currentDate, type: typeStr.split(" (")[0], duration, burned });
+      db.lastActiveDate = currentDate;
+      if (db.streak === 0) db.streak = 1;
       saveDB();
       closeModal("workout-modal");
       renderWorkoutsLog();
@@ -1060,6 +1096,11 @@
       renderWeightScreen();
       showToast("Berat badan diperbarui!");
     }
+
+    let macroPieChartInstance = null;
+    let mealBarChartInstance = null;
+    let weightTrendChartInstance = null;
+    let sevenDayChartInstance = null;
 
     function renderWeightScreen() {
       const curr = db.profile.weight;
@@ -1278,6 +1319,8 @@
     }
 
     function renderAll() {
+      checkAndResetWaterDaily();
+      checkAndUpdateStreak();
       renderDashboardSummary();
       renderFoodList();
       renderWater();
