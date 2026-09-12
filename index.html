@@ -368,6 +368,27 @@
         <div id="weekly-workout-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </div>
 
+      <!-- FITUR BARU: RISET OTOMATIS TIAP MINGGU -->
+      <div class="bg-gradient-to-r from-emerald-900 to-teal-800 rounded-2xl p-6 text-white shadow-md space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2.5 bg-white/10 rounded-xl">
+              <i data-lucide="brain" class="w-6 h-6 text-emerald-300"></i>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-base">Riset Otomatis Performa Mingguan</h3>
+              <p class="text-xs text-emerald-200">Analisis cerdas berdasarkan log latihan dan total pembakaran kalori Anda 7 hari terakhir.</p>
+            </div>
+          </div>
+          <button onclick="generateWeeklyResearch()" class="bg-white text-emerald-900 hover:bg-emerald-50 px-4 py-2.5 rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5 shrink-0">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Perbarui Riset
+          </button>
+        </div>
+        <div id="weekly-research-content" class="bg-white/10 backdrop-blur-sm p-4 rounded-xl text-xs leading-relaxed border border-white/10 text-emerald-50 space-y-2">
+          Klik tombol "Perbarui Riset" untuk memindai aktivitas latihan mingguan Anda secara otomatis.
+        </div>
+      </div>
+
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="p-5 border-b border-slate-100">
           <h3 class="font-extrabold text-slate-800">Log Riwayat Aktivitas Olahraga</h3>
@@ -483,12 +504,13 @@
           <div class="flex-grow border-t border-slate-200"></div>
         </div>
 
+        <!-- Bagian Auto-Estimasi Nutrisi Pintar yang dioptimalkan -->
         <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 space-y-3">
           <div class="flex justify-between items-center">
             <span class="text-xs font-extrabold text-emerald-900 flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-emerald-600"></i> Auto-Estimasi Nutrisi Pintar</span>
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 mb-1">Ketik Apa yang Kamu Makan secara Natural</label>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">Ketik Apa yang Kamu Makan secara Natural (Cth: "1 piring nasi padang", "susu dancow cokelat", "dua butir telur rebus")</label>
             <input type="text" id="custom-food-desc" placeholder="Cth: ayam geprek porsi sedang..." class="w-full bg-white border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
           </div>
         </div>
@@ -627,63 +649,117 @@
   </div>
 
   <script>
+    
     const DATABASE_MAKANAN = {
+      
       "Nasi Putih (1 piring/150g)": {"kalori": 204, "protein": 4.2, "karbo": 44.0, "lemak": 0.4},
+      "Nasi Merah (1 piring/150g)": {"kalori": 160, "protein": 3.5, "karbo": 33.0, "lemak": 1.2},
       "Oatmeal (40g dry)": {"kalori": 150, "protein": 5.0, "karbo": 27.0, "lemak": 2.5},
-      "Nasi Goreng (1 piring)": {"kalori": 510, "protein": 12.5, "karbo": 65.0, "lemak": 21.0},
+      "Nasi Goreng Spesial (1 piring)": {"kalori": 510, "protein": 12.5, "karbo": 65.0, "lemak": 21.0},
+      "Nasi Uduk + Tempe + Timun (1 porsi)": {"kalori": 450, "protein": 8.0, "karbo": 55.0, "lemak": 20.0},
+      "Nasi Padang Rendang (1 porsi)": {"kalori": 650, "protein": 22.0, "karbo": 60.0, "lemak": 35.0},
       "Roti Tawar Gandum (2 lembar)": {"kalori": 130, "protein": 5.0, "karbo": 24.0, "lemak": 1.5},
       "Indomie Goreng Standard (1 bungkus)": {"kalori": 380, "protein": 7.0, "karbo": 54.0, "lemak": 14.0},
       "Indomie Goreng Jumbo (1 bungkus)": {"kalori": 530, "protein": 10.0, "karbo": 75.0, "lemak": 20.0},
-      "Indomie Rebus Rasa Ayam Bawang / Kari (1 bungkus)": {"kalori": 340, "protein": 6.5, "karbo": 48.0, "lemak": 13.0},
+      "Indomie Rebus Ayam Bawang (1 bungkus)": {"kalori": 340, "protein": 6.5, "karbo": 48.0, "lemak": 13.0},
+      "Bubur Ayam Spesial (1 mangkok)": {"kalori": 320, "protein": 12.0, "karbo": 42.0, "lemak": 11.0},
+      "Gado-Gado Siram Bumbu Kacang (1 porsi)": {"kalori": 310, "protein": 10.5, "karbo": 38.0, "lemak": 12.0},
+      "Ketoprak Betawi (1 porsi)": {"kalori": 390, "protein": 13.0, "karbo": 52.0, "lemak": 15.0},
+      "Soto Ayam Madura + Nasi (1 mangkok)": {"kalori": 400, "protein": 24.0, "karbo": 45.0, "lemak": 14.0},
+      "Bakso Sapi Urat (1 porsi/10 butir)": {"kalori": 360, "protein": 18.0, "karbo": 30.0, "lemak": 18.0},
+      "Mie Ayam Pangsit (1 mangkok)": {"kalori": 480, "protein": 16.0, "karbo": 62.0, "lemak": 18.0},
+      "Kentang Rebus / Kukus (200g)": {"kalori": 170, "protein": 4.5, "karbo": 38.0, "lemak": 0.2},
+      "Ubi Jalar Rebus (200g)": {"kalori": 172, "protein": 3.2, "karbo": 40.0, "lemak": 0.2},
+      "Pasta Spagheti Bolognese (1 porsi)": {"kalori": 490, "protein": 19.0, "karbo": 68.0, "lemak": 16.0},
+      "Pizza Slices (2 slice reguler)": {"kalori": 520, "protein": 20.0, "karbo": 60.0, "lemak": 22.0},
+      "Burger Daging Sapi Keju (1 pcs)": {"kalori": 450, "protein": 24.0, "karbo": 40.0, "lemak": 22.0},
+      "Kentang Goreng / French Fries (1 porsi medium)": {"kalori": 365, "protein": 4.0, "karbo": 48.0, "lemak": 18.0},
+      "Salad Sayur Dressing Thousand Island (1 mangkok)": {"kalori": 180, "protein": 3.0, "karbo": 12.0, "lemak": 14.0},
+      "Sate Ayam Madura (10 tusuk + bumbu kacang)": {"kalori": 420, "protein": 32.0, "karbo": 12.0, "lemak": 26.0},
+      "Sate Kambing (10 tusuk + kecap)": {"kalori": 490, "protein": 35.0, "karbo": 10.0, "lemak": 33.0},
 
-      "Dubai Chewy Cookies (1 pcs/70g)": {"kalori": 320, "protein": 4.5, "karbo": 38.0, "lemak": 17.0},
-      "Es Krim Vanilla / Cokelat (1 scoop/75g)": {"kalori": 150, "protein": 2.5, "karbo": 18.0, "lemak": 7.5},
-      "Kopi Hitam / Americano Unsweetened (1 gelas)": {"kalori": 5, "protein": 0.3, "karbo": 0.0, "lemak": 0.0},
-      "Milk Tea / Boba Drink (1 cup standard)": {"kalori": 350, "protein": 3.0, "karbo": 58.0, "lemak": 12.0},
-      "Yogurt Plain / Greek Yogurt (1 cup/125g)": {"kalori": 100, "protein": 7.0, "karbo": 8.0, "lemak": 4.0},
       
+      "Dada Ayam Bakar (100g)": {"kalori": 165, "protein": 31.0, "karbo": 0.0, "lemak": 3.6},
+      "Dada Ayam Rebus / Kukus (100g)": {"kalori": 130, "protein": 28.0, "karbo": 0.0, "lemak": 2.0},
       "Ayam Goreng - Dada (1 pcs)": {"kalori": 220, "protein": 29.0, "karbo": 0.0, "lemak": 11.0},
       "Ayam Goreng - Paha Atas / Thigh (1 pcs)": {"kalori": 210, "protein": 22.0, "karbo": 0.0, "lemak": 13.0},
       "Ayam Goreng - Paha Bawah / Drumstick (1 pcs)": {"kalori": 160, "protein": 18.0, "karbo": 0.0, "lemak": 9.5},
-      "Ayam Goreng - Kepak / Sayap (1 pcs)": {"kalori": 140, "protein": 12.0, "karbo": 0.0, "lemak": 10.0},
-      "Ayam Goreng - Ati Ampela (1 pasang)": {"kalori": 120, "protein": 16.0, "karbo": 0.5, "lemak": 5.5},
-
-      "Fried Chicken - Dada (1 pcs)": {"kalori": 390, "protein": 34.0, "karbo": 11.0, "lemak": 23.0},
-      "Fried Chicken - Paha Upper (1 pcs)": {"kalori": 330, "protein": 24.0, "karbo": 9.0, "lemak": 22.0},
-      "Fried Chicken - Paha Bawah / Drumstick (1 pcs)": {"kalori": 220, "protein": 16.0, "karbo": 7.0, "lemak": 14.0},
-      "Fried Chicken - Sayap (1 pcs)": {"kalori": 210, "protein": 13.0, "karbo": 8.0, "lemak": 14.0},
-      "Ayam Geprek + Tepung (1 porsi)": {"kalori": 420, "protein": 28.0, "karbo": 15.0, "lemak": 27.0},
-      "Ayam Popcorn / Crispy Bites (100g)": {"kalori": 290, "protein": 18.0, "karbo": 16.0, "lemak": 17.0},
-      "Dada Ayam Bakar (100g)": {"kalori": 165, "protein": 31.0, "karbo": 0.0, "lemak": 3.6},
-      "Dada Ayam Rebus/Kukus (100g)": {"kalori": 130, "protein": 28.0, "karbo": 0.0, "lemak": 2.0},
-      "Sate Ayam + Bumbu Kacang (10 tusuk)": {"kalori": 420, "protein": 32.0, "karbo": 12.0, "lemak": 26.0},
-      "Sate Kambing + Bumbu Kecap (10 tusuk)": {"kalori": 490, "protein": 35.0, "karbo": 10.0, "lemak": 33.0},
-      "Dimsum Ayam (4 pcs)": {"kalori": 210, "protein": 14.0, "karbo": 18.0, "lemak": 9.0},
-      
-      "Martabak Telur Daging Sapi (Standard 4 Telur - 1 Potong)": {"kalori": 190, "protein": 9.5, "karbo": 10.0, "lemak": 12.5},
-      "Martabak Telur Daging Sapi Pacenongan/Spesial (1 Potong Besar)": {"kalori": 260, "protein": 13.0, "karbo": 12.0, "lemak": 18.0},
+      "Fried Chicken Tepung - Dada (1 pcs)": {"kalori": 390, "protein": 34.0, "karbo": 11.0, "lemak": 23.0},
+      "Fried Chicken Tepung - Paha (1 pcs)": {"kalori": 330, "protein": 24.0, "karbo": 9.0, "lemak": 22.0},
+      "Ayam Geprek Sambal Matah (1 porsi)": {"kalori": 420, "protein": 28.0, "karbo": 15.0, "lemak": 27.0},
+      "Ayam Popcorn Crispy (100g)": {"kalori": 290, "protein": 18.0, "karbo": 16.0, "lemak": 17.0},
       "Telur Rebus (1 butir)": {"kalori": 78, "protein": 6.3, "karbo": 0.6, "lemak": 5.3},
-      "Telur Dadar (1 butir)": {"kalori": 110, "protein": 6.5, "karbo": 0.8, "lemak": 9.0},
-      "Tahu Goreng (1 potong)": {"kalori": 35, "protein": 2.0, "karbo": 1.5, "lemak": 2.5},
-      "Tempe Goreng (1 potong)": {"kalori": 50, "protein": 4.0, "karbo": 3.0, "lemak": 3.0},
+      "Telur Dadar / Omelet (1 butir)": {"kalori": 110, "protein": 6.5, "karbo": 0.8, "lemak": 9.0},
+      "Telur Mata Sapi / Ceplok (1 butir)": {"kalori": 95, "protein": 6.3, "karbo": 0.4, "lemak": 7.5},
+      "Tahu Goreng Tepung (1 potong)": {"kalori": 45, "protein": 2.5, "karbo": 3.0, "lemak": 3.2},
+      "Tempe Goreng Mendoan (1 potong)": {"kalori": 75, "protein": 4.5, "karbo": 5.0, "lemak": 4.5},
+      "Tempe Bacem (1 potong)": {"kalori": 60, "protein": 5.0, "karbo": 6.0, "lemak": 2.0},
+      "Ikan Lele Goreng (1 ekor sedang)": {"kalori": 195, "protein": 20.0, "karbo": 2.0, "lemak": 11.0},
+      "Ikan Nila Bakar (1 ekor sedang)": {"kalori": 180, "protein": 26.0, "karbo": 1.0, "lemak": 7.0},
+      "Ikan Tuna Bakar (100g)": {"kalori": 130, "protein": 29.0, "karbo": 0.0, "lemak": 1.2},
+      "Ikan Salmon Panggang (100g)": {"kalori": 206, "protein": 22.0, "karbo": 0.0, "lemak": 13.0},
+      "Udang Goreng Tepung (5 ekor)": {"kalori": 230, "protein": 16.0, "karbo": 12.0, "lemak": 13.0},
+      "Cumi Goreng Tepung / Calamari (100g)": {"kalori": 245, "protein": 15.0, "karbo": 14.0, "lemak": 14.0},
+      "Daging Sapi Lada Hitam (100g)": {"kalori": 250, "protein": 22.0, "karbo": 8.0, "lemak": 14.0},
+      "Bakso Goreng (1 pcs)": {"kalori": 65, "protein": 2.5, "karbo": 4.0, "lemak": 4.5},
+      "Dimsum Ayam Jamur (4 pcs)": {"kalori": 210, "protein": 14.0, "karbo": 18.0, "lemak": 9.0},
       "Whey Protein Shake (1 scoop)": {"kalori": 120, "protein": 24.0, "karbo": 3.0, "lemak": 1.5},
 
+      
+      "Kopi Hitam / Americano Unsweetened (1 gelas)": {"kalori": 5, "protein": 0.3, "karbo": 0.0, "lemak": 0.0},
+      "Kopi Susu Gula Aren (1 gelas standard)": {"kalori": 180, "protein": 3.0, "karbo": 25.0, "lemak": 7.0},
+      "Cappuccino / Cafe Latte (1 cup)": {"kalori": 120, "protein": 6.0, "karbo": 10.0, "lemak": 6.0},
+      "Es Teh Manis (1 gelas)": {"kalori": 90, "protein": 0.0, "karbo": 22.0, "lemak": 0.0},
+      "Teh Tawar Hangat / Es Teh Tawar (1 gelas)": {"kalori": 2, "protein": 0.0, "karbo": 0.5, "lemak": 0.0},
+      "Milk Tea / Boba Brown Sugar (1 cup standard)": {"kalori": 350, "protein": 3.0, "karbo": 58.0, "lemak": 12.0},
+      "Green Tea Latte (1 cup)": {"kalori": 200, "protein": 5.0, "karbo": 28.0, "lemak": 7.0},
       "Susu Dancow FortiGro Full Cream (1 saset/27g)": {"kalori": 130, "protein": 6.0, "karbo": 12.0, "lemak": 7.0},
       "Susu Dancow FortiGro Cokelat (1 saset/39g)": {"kalori": 160, "protein": 5.0, "karbo": 23.0, "lemak": 5.0},
-      "Susu Zee Swirtz Cokelat/Vanila (1 saset/40g)": {"kalori": 160, "protein": 5.0, "karbo": 24.0, "lemak": 4.5},
+      "Susu Zee Swirtz Cokelat / Vanila (1 saset/40g)": {"kalori": 160, "protein": 5.0, "karbo": 24.0, "lemak": 4.5},
       "Susu Milo Bubuk (1 saset/22g)": {"kalori": 90, "protein": 2.0, "karbo": 14.0, "lemak": 2.5},
       "Susu UHT Full Cream / Ultra Milk (200ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
       "Susu Indomilk UHT Cokelat (190ml)": {"kalori": 140, "protein": 5.0, "karbo": 21.0, "lemak": 4.0},
-      "Susu Bear Brand / Beruang (1 kaleng/189ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
+      "Susu Bear Brand / Susu Beruang (1 kaleng/189ml)": {"kalori": 120, "protein": 6.0, "karbo": 9.0, "lemak": 7.0},
+      "Susu Almond (250ml)": {"kalori": 40, "protein": 1.0, "karbo": 2.0, "lemak": 3.0},
+      "Susu Kedelai / Soy Milk Manis (1 gelas/250ml)": {"kalori": 130, "protein": 7.0, "karbo": 15.0, "lemak": 4.0},
+      "Yogurt Plain / Greek Yogurt (1 cup/125g)": {"kalori": 100, "protein": 7.0, "karbo": 8.0, "lemak": 4.0},
+      "Yogurt Drink Buah (1 botol/200ml)": {"kalori": 140, "protein": 4.0, "karbo": 26.0, "lemak": 2.0},
+      "Jus Jeruk Segar Tanpa Gula (1 gelas)": {"kalori": 112, "protein": 1.7, "karbo": 26.0, "lemak": 0.5},
+      "Jus Alpukat + Susu Cokelat (1 gelas)": {"kalori": 320, "protein": 4.5, "karbo": 42.0, "lemak": 16.0},
+      "Jus Mangga Manis (1 gelas)": {"kalori": 180, "protein": 2.0, "karbo": 44.0, "lemak": 1.0},
+      "Es Cendol / Dawet Santan (1 gelas)": {"kalori": 220, "protein": 2.0, "karbo": 38.0, "lemak": 7.0},
+      "Es Teler Buah Spesial (1 mangkok)": {"kalori": 310, "protein": 3.5, "karbo": 48.0, "lemak": 12.0},
+      "Es Kelapa Muda Murni (1 gelas)": {"kalori": 45, "protein": 1.0, "karbo": 10.0, "lemak": 0.5},
+      "Soft Drink / Coca Cola / Sprite (330ml can)": {"kalori": 140, "protein": 0.0, "karbo": 35.0, "lemak": 0.0},
+      "Isotonic Drink / Pocari Sweat (500ml)": {"kalori": 105, "protein": 0.0, "karbo": 26.0, "lemak": 0.0},
 
+      
+      "Dubai Chewy Cookies (1 pcs/70g)": {"kalori": 320, "protein": 4.5, "karbo": 38.0, "lemak": 17.0},
+      "Es Krim Vanilla / Cokelat (1 scoop/75g)": {"kalori": 150, "protein": 2.5, "karbo": 18.0, "lemak": 7.5},
       "Martabak Manis Cokelat Keju (1 potong)": {"kalori": 270, "protein": 5.0, "karbo": 34.0, "lemak": 13.0},
-      "Pisang Goreng (1 pcs)": {"kalori": 140, "protein": 1.2, "karbo": 22.0, "lemak": 5.5},
+      "Martabak Telur Daging Sapi (1 potong)": {"kalori": 190, "protein": 9.5, "karbo": 10.0, "lemak": 12.5},
+      "Pisang Goreng Tepung (1 pcs)": {"kalori": 140, "protein": 1.2, "karbo": 22.0, "lemak": 5.5},
       "Roti Bakar Cokelat Keju (1 porsi)": {"kalori": 380, "protein": 8.0, "karbo": 52.0, "lemak": 16.0},
-      "Kue Klepon (3 pcs)": {"kalori": 135, "protein": 1.5, "karbo": 26.0, "lemak": 3.0},
+      "Kue Klepon Gula Merah (3 pcs)": {"kalori": 135, "protein": 1.5, "karbo": 26.0, "lemak": 3.0},
       "Donat Cokelat Meses (1 pcs)": {"kalori": 240, "protein": 4.0, "karbo": 31.0, "lemak": 11.0},
-      "Es Cendol / Dawet (1 gelas)": {"kalori": 220, "protein": 2.0, "karbo": 38.0, "lemak": 7.0},
-      "Es Teler (1 mangkok)": {"kalori": 310, "protein": 3.5, "karbo": 48.0, "lemak": 12.0},
-      "Kopi Susu Gula Aren (1 gelas)": {"kalori": 180, "protein": 3.0, "karbo": 25.0, "lemak": 7.0}
+      "Onde-Onde Kacang Hijau (2 pcs)": {"kalori": 190, "protein": 4.0, "karbo": 30.0, "lemak": 6.0},
+      "Lemper Ayam Ketan (2 pcs)": {"kalori": 210, "protein": 6.0, "karbo": 28.0, "lemak": 8.0},
+      "Bakwan Sayur Goreng (2 pcs)": {"kalori": 180, "protein": 3.5, "karbo": 20.0, "lemak": 10.0},
+      "Risoles Mayonnaise Smoked Beef (2 pcs)": {"kalori": 260, "protein": 7.0, "karbo": 24.0, "lemak": 15.0},
+      "Pastel Goreng Ragout Ayam (2 pcs)": {"kalori": 240, "protein": 6.0, "karbo": 26.0, "lemak": 12.0},
+      "Kerupuk Udang / Ikan (5 pcs)": {"kalori": 100, "protein": 2.0, "karbo": 12.0, "lemak": 5.0},
+      "Emping Melinjo Goreng (1 genggam)": {"kalori": 130, "protein": 3.0, "karbo": 16.0, "lemak": 6.0},
+      "Kacang Tanah Goreng (50g)": {"kalori": 290, "protein": 12.0, "karbo": 10.0, "lemak": 24.0},
+      "Kacang Mede Panggang (30g)": {"kalori": 170, "protein": 5.0, "karbo": 9.0, "lemak": 14.0},
+      "Popcorn Bioskop Mentega (1 mangkok sedang)": {"kalori": 250, "protein": 3.0, "karbo": 30.0, "lemak": 14.0},
+      "Keripik Singkong Balado (50g)": {"kalori": 260, "protein": 1.5, "karbo": 32.0, "lemak": 14.0},
+      "Keripik Kentang Kemasan / Chiki (1 bungkus/50g)": {"kalori": 280, "protein": 3.0, "karbo": 28.0, "lemak": 17.0},
+      "Biskuit Marie Regal (5 keping)": {"kalori": 140, "protein": 2.5, "karbo": 22.0, "lemak": 4.5},
+      "Wafer Cokelat Kaleng (4 pcs)": {"kalori": 210, "protein": 2.0, "karbo": 26.0, "lemak": 11.0},
+      "Dark Chocolate 70% (30g)": {"kalori": 170, "protein": 2.2, "karbo": 14.0, "lemak": 12.0},
+      "Puding Cokelat Vla Vanila (1 mangkok)": {"kalori": 195, "protein": 4.0, "karbo": 32.0, "lemak": 6.0},
+      "Buah Pisang Cavendish (1 buah besar)": {"kalori": 120, "protein": 1.5, "karbo": 31.0, "lemak": 0.4},
+      "Buah Apel Merah (1 buah sedang)": {"kalori": 95, "protein": 0.5, "karbo": 25.0, "lemak": 0.3}
     };
 
     const WORKOUT_PROGRAMS = {
@@ -908,14 +984,40 @@
       showToast(`Program diubah ke ${splitName}`);
     }
 
+    
     function triggerAutoEstimate() {
       const rawText = document.getElementById("custom-food-desc").value.toLowerCase().trim();
       if (!rawText) return;
-      document.getElementById("food-name").value = document.getElementById("custom-food-desc").value.trim();
-      document.getElementById("food-cal").value = 350;
-      document.getElementById("food-pro").value = 20;
-      document.getElementById("food-carb").value = 40;
-      document.getElementById("food-fat").value = 10;
+
+      
+      let matchedKey = null;
+      for (const key of Object.keys(DATABASE_MAKANAN)) {
+        const keyLower = key.toLowerCase();
+        
+        const tokens = keyLower.split(/[\s\(\)\/]+/);
+        const matchCount = tokens.filter(t => t.length > 2 && rawText.includes(t)).length;
+        if (rawText.includes(keyLower.slice(0, 5)) || matchCount >= 2) {
+          matchedKey = key;
+          break;
+        }
+      }
+
+      if (matchedKey) {
+        const data = DATABASE_MAKANAN[matchedKey];
+        document.getElementById("food-name").value = matchedKey;
+        document.getElementById("food-cal").value = data.kalori;
+        document.getElementById("food-pro").value = data.protein;
+        document.getElementById("food-carb").value = data.karbo;
+        document.getElementById("food-fat").value = data.lemak;
+        showToast(`AI Pintar mendeteksi: ${matchedKey}`);
+      } else {
+        
+        document.getElementById("food-name").value = document.getElementById("custom-food-desc").value.trim();
+        document.getElementById("food-cal").value = 320;
+        document.getElementById("food-pro").value = 15;
+        document.getElementById("food-carb").value = 35;
+        document.getElementById("food-fat").value = 12;
+      }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -1244,6 +1346,7 @@
       saveDB();
       closeModal("workout-modal");
       renderWorkoutsLog();
+      generateWeeklyResearch();
       showToast(`Workout dicatat! Pembakaran ~${burned} kkal.`);
     }
 
@@ -1263,6 +1366,40 @@
           <span class="font-extrabold text-emerald-700 text-sm">~${w.burned} kkal</span>
         </div>
       `).join("");
+    }
+
+    function generateWeeklyResearch() {
+      const researchBox = document.getElementById("weekly-research-content");
+      if (!researchBox) return;
+
+      
+      const now = new Date();
+      const pastWeek = new Date();
+      pastWeek.setDate(now.getDate() - 7);
+
+      const recentWorkouts = db.workouts.filter(w => new Date(w.date) >= pastWeek);
+      const totalSessions = recentWorkouts.length;
+      const totalDuration = recentWorkouts.reduce((sum, w) => sum + Number(w.duration), 0);
+      const totalBurned = recentWorkouts.reduce((sum, w) => sum + Number(w.burned), 0);
+
+      let evaluation = "";
+      if (totalSessions >= 4) {
+        evaluation = "Luar biasa! Konsistensi latihan Anda sangat tinggi minggu ini. Pertahankan intensitas dan pastikan asupan protein tercukupi untuk pemulihan optimal.";
+      } else if (totalSessions >= 2) {
+        evaluation = "Aktivitas mingguan cukup baik, namun tingkatkan frekuensi sesi latihan menjadi 3-4 kali seminggu untuk hasil pembakaran lemak dan pembentukan otot yang lebih signifikan.";
+      } else {
+        evaluation = "Frekuensi latihan minggu ini masih rendah. Cobalah untuk mulai menjadwalkan setidaknya 3 sesi latihan ringan agar target kebugaran tercapai.";
+      }
+
+      researchBox.innerHTML = `
+        <p class="font-bold text-white mb-1">📊 Hasil Riset Otomatis (7 Hari Terakhir):</p>
+        <ul class="list-disc pl-4 space-y-1 text-emerald-100">
+          <li>Total Sesi Latihan: <strong>${totalSessions} Sesi</strong></li>
+          <li>Akumulasi Durasi: <strong>${totalDuration} Menit</strong></li>
+          <li>Estimasi Total Kalori Terbakar: <strong>${totalBurned} kkal</strong></li>
+          <li>Evaluasi AI Trainer: <em>${evaluation}</em></li>
+        </ul>
+      `;
     }
 
     function openWeightModal() { openModal("weight-modal"); }
@@ -1462,120 +1599,162 @@
     }
 
 
-    function syncToCloud() {
-      const url = document.getElementById("sheets-url").value;
-      if (!url) return showToast("Masukkan webhook URL Google Sheets.");
-      fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(db) })
-        .then(() => showToast("Data berhasil disinkronisasi ke Cloud!"))
-        .catch(() => showToast("Gagal menyinkronkan data."));
-    }
-
     function downloadPDFReport() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('p', 'mm', 'a4');
-      
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    
+    const logoBase64 = "logo2.png"; 
+    
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
 
-      doc.setFillColor(4, 120, 87);
-      doc.rect(0, 0, pageWidth, 25, 'F');
-
-      doc.setTextColor(255, 255, 255);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text("LAPORAN KESEHATAN & NUTRISI HARIAN", 14, 16);
-
-      let startY = 35;
-      doc.setFillColor(248, 249, 250);
-      doc.setDrawColor(220, 224, 230);
-      doc.roundedRect(14, startY, pageWidth - 28, 32, 3, 3, 'FD');
-
-      doc.setTextColor(30, 41, 59);
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "bold");
-      doc.text("Informasi Pengguna & Target:", 20, startY + 7);
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      const currentDate = document.getElementById("global-date").value;
-      doc.text(`Nama Pengguna : ${db.profile.name || 'Pengguna'}`, 20, startY + 14);
-      doc.text(`Tanggal Laporan : ${currentDate}`, 20, startY + 20);
-      doc.text(`Target Kalori TDEE : ${db.profile.targetCal} kkal`, 110, startY + 14);
-      doc.text(`Berat Badan Saat Ini : ${db.profile.weight} kg`, 110, startY + 20);
-
-      startY = 75;
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(12);
-      doc.setTextColor(30, 41, 59);
-      doc.text("Daftar Konsumsi Makanan", 14, startY);
-
-      startY += 4;
-      const todayFoods = db.foods.filter(f => f.date === currentDate);
-      const data = todayFoods.map((f, index) => [
-        index + 1,
-        f.meal,
-        f.name,
-        `${f.cal} kkal`,
-        `P: ${f.pro}g | K: ${f.carb}g | L: ${f.fat}g`
-      ]);
-
-      if (data.length === 0) {
-        data.push(["-", "-", "Belum ada catatan makanan untuk tanggal ini.", "-", "-"]);
-      }
-
-      let tableY = startY + 6;
-      
-      doc.setFillColor(4, 120, 87);
-      doc.rect(14, tableY, pageWidth - 28, 8, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(9);
-      doc.setFont("helvetica", "bold");
-      doc.text("No", 18, tableY + 5.5);
-      doc.text("Waktu", 30, tableY + 5.5);
-      doc.text("Menu Makanan", 55, tableY + 5.5);
-      doc.text("Kalori", 130, tableY + 5.5);
-      doc.text("Detail Makro (P / K / L)", 155, tableY + 5.5);
-
-      tableY += 8;
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(50, 50, 50);
-
-      todayFoods.forEach((f, index) => {
-        if (tableY > pageHeight - 30) {
-          doc.addPage();
-          tableY = 20;
+    
+    try {
+        doc.saveGraphicsState(); 
+        
+        
+        if (typeof doc.setGState === 'function') {
+            doc.setGState(new doc.GState({ opacity: 0.2 }));
         }
         
-        if (index % 2 === 0) {
-          doc.setFillColor(252, 253, 253);
-          doc.rect(14, tableY, pageWidth - 28, 8, 'F');
-        }
-
-        doc.text(String(index + 1), 18, tableY + 5.5);
-        doc.text(String(f.meal), 30, tableY + 5.5);
-        doc.text(String(f.name), 55, tableY + 5.5, { maxWidth: 70 });
-        doc.text(`${f.cal} kkal`, 130, tableY + 5.5);
-        doc.text(`P:${f.pro}g  K:${f.carb}g  L:${f.fat}g`, 155, tableY + 5.5);
-
-        doc.setDrawColor(235, 238, 242);
-        doc.line(14, tableY + 8, pageWidth - 14, tableY + 8);
+        const wmSize = 100; 
+        const wmX = (pageWidth - wmSize) / 2;
+        const wmY = (pageHeight - wmSize) / 2 + 15; 
         
-        tableY += 8;
-      });
-
-      const footerY = pageHeight - 15;
-      doc.setDrawColor(200, 200, 200);
-      doc.line(14, footerY - 5, pageWidth - 14, footerY - 5);
-      
-      doc.setFont("helvetica", "italic");
-      doc.setFontSize(8);
-      doc.setTextColor(150, 150, 150);
-      doc.text("Laporan ini digenerate secara otomatis oleh HealthTracker Pro Edition.", 14, footerY);
-      doc.text(`Dicetak pada: ${new Date().toLocaleString()}`, pageWidth - 14, footerY, { align: "right" });
-
-      doc.save(`Laporan-Kesehatan-${currentDate}.pdf`);
-      showToast("Laporan PDF profesional berhasil diunduh!");
+        doc.addImage(logoBase64, 'PNG', wmX, wmY, wmSize, wmSize);
+        
+        doc.restoreGraphicsState();
+    } catch (e) {
+        console.warn("Gagal memuat watermark logo.", e);
     }
+
+    
+    const logoWidth = 20;
+    const logoHeight = 20;
+    const logoX = (pageWidth - logoWidth) / 2;
+    const logoY = 12;
+
+    try {
+        doc.addImage(logoBase64, 'PNG', logoX, logoY, logoWidth, logoHeight);
+    } catch (e) {
+        console.warn("Gagal memuat logo header.", e);
+    }
+
+    let currentY = logoY + logoHeight + 4;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(4, 120, 87); 
+    doc.text("LAPORAN KESEHATAN & NUTRISI HARIAN", pageWidth / 2, currentY, { align: "center" });
+
+    currentY += 5;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139);
+    doc.text("HealthTracker Pro Edition", pageWidth / 2, currentY, { align: "center" });
+
+    currentY += 5;
+    doc.setDrawColor(220, 224, 230);
+    doc.setLineWidth(0.4);
+    doc.line(14, currentY, pageWidth - 14, currentY);
+
+    currentY += 6;
+    const infoBoxHeight = 26;
+    doc.setFillColor(248, 249, 250);
+    doc.setDrawColor(220, 224, 230);
+    doc.roundedRect(14, currentY, pageWidth - 28, infoBoxHeight, 3, 3, 'FD');
+
+    doc.setTextColor(30, 41, 59);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.text("Informasi Pengguna & Target:", 20, currentY + 6);
+
+    const currentDate = document.getElementById("global-date").value;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    doc.text(`Nama Pengguna : ${db.profile.name || 'Pengguna'}`, 20, currentY + 13);
+    doc.text(`Tanggal Laporan : ${currentDate}`, 20, currentY + 19);
+    doc.text(`Target Kalori TDEE : ${db.profile.targetCal || 0} kkal`, 110, currentY + 13);
+    doc.text(`Berat Badan Saat Ini : ${db.profile.weight || 0} kg`, 110, currentY + 19);
+
+    
+    currentY += infoBoxHeight + 8;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(30, 41, 59);
+    doc.text("Daftar Konsumsi Makanan", 14, currentY);
+
+    currentY += 3;
+    const todayFoods = db.foods.filter(f => f.date === currentDate);
+    let tableY = currentY + 3;
+    
+    
+    doc.setFillColor(4, 120, 87);
+    doc.rect(14, tableY, pageWidth - 28, 7, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8.5);
+    doc.setFont("helvetica", "bold");
+    doc.text("No", 18, tableY + 5);
+    doc.text("Waktu", 30, tableY + 5);
+    doc.text("Menu Makanan", 55, tableY + 5);
+    doc.text("Kalori", 130, tableY + 5);
+    doc.text("Detail Makro (P / K / L)", 155, tableY + 5);
+
+    tableY += 7;
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(50, 50, 50);
+
+    if (todayFoods.length === 0) {
+        doc.setFillColor(255, 255, 255);
+        doc.rect(14, tableY, pageWidth - 28, 7, 'F');
+        doc.text("-", 18, tableY + 5);
+        doc.text("-", 30, tableY + 5);
+        doc.text("Belum ada catatan makanan untuk tanggal ini.", 55, tableY + 5);
+        doc.text("-", 130, tableY + 5);
+        doc.text("-", 155, tableY + 5);
+        tableY += 7;
+    } else {
+        todayFoods.forEach((f, index) => {
+            if (tableY > pageHeight - 25) {
+                doc.addPage();
+                tableY = 20;
+            }
+            
+            if (index % 2 === 0) {
+                doc.setFillColor(252, 253, 253);
+                doc.rect(14, tableY, pageWidth - 28, 7, 'F');
+            }
+
+            doc.text(String(index + 1), 18, tableY + 5);
+            doc.text(String(f.meal || '-'), 30, tableY + 5);
+            doc.text(String(f.name || '-'), 55, tableY + 5, { maxWidth: 70 });
+            doc.text(`${f.cal || 0} kkal`, 130, tableY + 5);
+            doc.text(`P:${f.pro || 0}g  K:${f.carb || 0}g  L:${f.fat || 0}g`, 155, tableY + 5);
+
+            doc.setDrawColor(235, 238, 242);
+            doc.line(14, tableY + 7, pageWidth - 14, tableY + 7);
+            
+            tableY += 7;
+        });
+    }
+
+    
+    const footerY = pageHeight - 12;
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.3);
+    doc.line(14, footerY - 4, pageWidth - 14, footerY - 4);
+    
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text("Laporan ini digenerate secara otomatis oleh HealthTracker Pro Edition.", 14, footerY);
+    doc.text(`Dicetak pada: ${new Date().toLocaleString()}`, pageWidth - 14, footerY, { align: "right" });
+
+    
+    doc.save(`Laporan-Kesehatan-${currentDate}.pdf`);
+    if (typeof showToast === 'function') {
+        showToast("Laporan PDF berhasil diunduh dengan watermark logo!");
+    }
+}
 
     function getMealBadgeStyle(mealName) {
       switch (mealName) {
@@ -1601,6 +1780,7 @@
       renderWorkoutsLog();
       renderWeeklyWorkouts();
       renderWeightScreen();
+      generateWeeklyResearch();
       lucide.createIcons();
     }
 
