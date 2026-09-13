@@ -479,22 +479,9 @@
           <div id="food-search-results" class="hidden absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-48 overflow-y-auto divide-y divide-slate-100"></div>
         </div>
 
-        <div class="relative flex py-2 items-center">
-          <div class="flex-grow border-t border-slate-200"></div>
-          <span class="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider">Atau Ketik Natural</span>
-          <div class="flex-grow border-t border-slate-200"></div>
-        </div>
+        
 
-        <!-- Bagian Auto-Estimasi Nutrisi Pintar yang dioptimalkan -->
-        <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 space-y-3">
-          <div class="flex justify-between items-center">
-            <span class="text-xs font-extrabold text-emerald-900 flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-emerald-600"></i> Auto-Estimasi Nutrisi Pintar</span>
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-600 mb-1">Ketik Apa yang Kamu Makan secara Natural (Cth: "1 piring nasi padang", "susu dancow cokelat", "dua butir telur rebus")</label>
-            <input type="text" id="custom-food-desc" placeholder="Cth: ayam geprek porsi sedang..." class="w-full bg-white border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600">
-          </div>
-        </div>
+        
 
         <!-- Custom Dropdown Waktu Makan -->
         <div class="relative">
@@ -788,26 +775,34 @@
     };
 
     function checkAndUpdateStreak() {
-      const lastActive = db.lastActiveDate;
-      const currentDate = new Date().toISOString().slice(0, 10);
-      
-      if (lastActive !== currentDate) {
-        const lastDateObj = new Date(lastActive);
-        const currentDateObj = new Date(currentDate);
-        const diffTime = Math.abs(currentDateObj - lastDateObj);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      let currentStreak = 0;
+      let checkDate = new Date();
 
-        const hasActivityToday = db.foods.some(f => f.date === currentDate) || db.workouts.some(w => w.date === currentDate);
-
-        if (diffDays === 1 && hasActivityToday) {
-          db.streak += 1;
-          db.lastActiveDate = currentDate;
-        } else if (diffDays > 1) {
-          db.streak = hasActivityToday ? 1 : 0;
-          db.lastActiveDate = currentDate;
+      while (true) {
+        const dateStr = checkDate.toISOString().slice(0, 10);
+        const hasActivity = db.foods.some(f => f.date === dateStr) || db.workouts.some(w => w.date === dateStr);
+        
+        if (hasActivity) {
+          currentStreak++;
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          if (currentStreak === 0 && dateStr === new Date().toISOString().slice(0, 10)) {
+            checkDate.setDate(checkDate.getDate() - 1);
+            const yesterdayStr = checkDate.toISOString().slice(0, 10);
+            const hasYesterdayActivity = db.foods.some(f => f.date === yesterdayStr) || db.workouts.some(w => w.date === yesterdayStr);
+            if (hasYesterdayActivity) {
+              currentStreak++;
+              checkDate.setDate(checkDate.getDate() - 1);
+              continue;
+            }
+          }
+          break;
         }
-        saveDB();
       }
+
+      db.streak = Math.max(0, currentStreak);
+      db.lastActiveDate = new Date().toISOString().slice(0, 10);
+      saveDB();
     }
 
     function checkAndResetWaterDaily() {
@@ -967,7 +962,6 @@
 
     
     function triggerAutoEstimate() {
-      const rawText = document.getElementById("custom-food-desc").value.toLowerCase().trim();
       if (!rawText) return;
 
       
@@ -993,7 +987,6 @@
         showToast(`AI Pintar mendeteksi: ${matchedKey}`);
       } else {
         
-        document.getElementById("food-name").value = document.getElementById("custom-food-desc").value.trim();
         document.getElementById("food-cal").value = 320;
         document.getElementById("food-pro").value = 15;
         document.getElementById("food-carb").value = 35;
@@ -1002,7 +995,6 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      const customDescEl = document.getElementById("custom-food-desc");
       if (customDescEl) {
         customDescEl.addEventListener("input", triggerAutoEstimate);
       }
@@ -1108,7 +1100,6 @@
     function openFoodModal() { 
       foodQueue = [];
       document.getElementById("food-search-input").value = "";
-      document.getElementById("custom-food-desc").value = "";
       document.getElementById("food-search-results").classList.add("hidden");
       document.getElementById("food-name").value = "";
       document.getElementById("food-cal").value = "";
